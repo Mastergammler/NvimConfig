@@ -15,10 +15,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Configure leader before? what happens if i dont?
-vim.g.mapleader = " "
--- TODO: what is local leader?
-vim.g.maplocalleader = "\\"
+-- Configure leader keys before this is called
 
 -- Steup lazy.nvim
 require("lazy").setup({
