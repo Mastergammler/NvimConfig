@@ -29,5 +29,6 @@ vim.opt.isfname:append("@-@")
 vim.opt.updatetime = 1000 
 vim.opt.colorcolumn = "120"
 
--- enabeling copy paste by default
+-- enabeling copy paste by default 
+-- FIXME: doesn't work currently
 vim.opt.clipboard:append('unnamed,unnamedplus')
