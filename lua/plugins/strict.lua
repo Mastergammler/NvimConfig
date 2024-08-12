@@ -7,4 +7,9 @@ return {
 		config = function()
 			vim.cmd([[colorscheme nightfly]])
 		end,
-	}}
+	},
+    {
+        "theprimeagen/harpoon",
+        lazy = false
+    }
+}
