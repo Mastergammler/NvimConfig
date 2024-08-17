@@ -43,8 +43,7 @@ vim.keymap.set("n","<leader>ho",vim.cmd.nohlsearch, {desc = 'highlight off - des
 
 vim.keymap.set('t','``','<C-\\><C-n>', {noremap = true, desc = 'Exists terminal insert mode'})
 vim.keymap.set({'n'}, '`,','<C-w>wa',{noremap = true, desc = 'Jump to next window (terminal) and inserct [Dual window]' })
--- TODO: does this work with using the remapped command?
-vim.keymap.set('t', '`,','``<C-w>w',{noremap = true, desc = 'Jump from terminal back to normal window [Dual window]' })
+vim.keymap.set('t', '`,','<C-\\><C-n><C-w>w',{noremap = true, desc = 'Jump from terminal back to normal window [Dual window]' })
 
 -----------------
 -- DEVELOPMENT --

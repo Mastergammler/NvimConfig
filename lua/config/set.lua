@@ -30,5 +30,6 @@ vim.opt.updatetime = 1000
 vim.opt.colorcolumn = "120"
 
 -- enabeling copy paste by default 
--- FIXME: doesn't work currently
+-- FIXME: doesn't work currently (on linux)
 vim.opt.clipboard:append('unnamed,unnamedplus')
+vim.opt.autochdir = true

@@ -1,11 +1,11 @@
 return {
     {
         "mbbill/undotree",
-        lazy = true
+        lazy = false
     },
     {
         "folke/todo-comments.nvim",
-        lazy = true,
+        lazy = false,
         opts = {signs = false}
     },
     {
