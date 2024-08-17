@@ -26,10 +26,14 @@ vim.opt.signcolumn = "yes"
 vim.opt.isfname:append("@-@")
 
 -- trigger for CursorHold events, currently not using it much
-vim.opt.updatetime = 1000 
+vim.opt.updatetime = 1000
 vim.opt.colorcolumn = "120"
+vim.opt.cursorline = true
 
--- enabeling copy paste by default 
+-- enabeling copy paste by default
 -- FIXME: doesn't work currently (on linux)
 vim.opt.clipboard:append('unnamed,unnamedplus')
-vim.opt.autochdir = true
+
+-- we don't want to change the dir automatically everywhere
+-- else the cmd of a new terminal will not be the root project dir
+vim.opt.autochdir = false
