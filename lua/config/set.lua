@@ -31,7 +31,7 @@ vim.opt.colorcolumn = "120"
 vim.opt.cursorline = true
 
 -- enabeling copy paste by default
--- FIXME: doesn't work currently (on linux)
+-- NOTE: requires a tool like xclip to be install on linux
 vim.opt.clipboard:append('unnamed,unnamedplus')
 
 -- we don't want to change the dir automatically everywhere

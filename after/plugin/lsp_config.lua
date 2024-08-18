@@ -40,12 +40,28 @@ cmp.setup({
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-k>'] = cmp.mapping.select_prev_item({ behaviour = cmp.SelectBehavior.Select }),
         ['<C-j>'] = cmp.mapping.select_next_item({ behaviour = cmp.SelectBehavior.Select }),
-        ['<C-Spcae>'] = cmp.mapping.complete {},
+        -- this opens the auto complete line
+        ['<Tab>'] = cmp.mapping.complete {},
         ['<CR>'] = cmp.mapping.confirm {
             behavior = cmp.ConfirmBehavior.Insert,
             select = true,
-        }
+        },
+        ['<C-Space>'] = cmp.mapping(function(fallback)
+            -- TODO: what is this? same as completion list?
+            if cmp.visible() then
+                cmp.select_next_item()
+            elseif vim.snippet.active({ direction = 1 }) then
+                vim.snippet.jump(1)
+            else
+                fallback()
+            end
+        end, { 'i', 's' }),
     }),
+    -- use preselect and completeopts together that it works correctly
+    preselect = cmp.PreselectMode.Item,
+    completion = {
+        completeopt = 'menu,menuone,noinsert'
+    },
     sources = cmp.config.sources({
         { name = 'nvim_lsp' },
     }, {
@@ -80,6 +96,7 @@ cmp.setup.cmdline(':', {
     }),
     matching = { disallow_symbol_nonprefix_matching = false }
 })
+
 
 ----------
 -- LSPS --
