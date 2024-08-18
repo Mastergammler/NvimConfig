@@ -43,9 +43,11 @@ vim.keymap.set("n", "<leader>ho", vim.cmd.nohlsearch, { desc = 'highlight off - 
 
 vim.keymap.set('t', '``', '<C-\\><C-n>', { noremap = true, desc = 'Exists terminal insert mode' })
 vim.keymap.set({ 'n' }, '`,', '<C-w>wa',
-    { noremap = true, desc = 'Jump to next window (terminal) and inserct [Dual window]' })
+    { noremap = true, desc = 'Jump to next window (terminal) and insert [Win Toggl]' })
+vim.keymap.set('n', '<leader>tt', '<C-w>wa<C-\\><C-n><C-w>w',
+    { desc = 'Scroll terminal down (insert) and jump back [Win Toggle]' })
 vim.keymap.set('t', '`,', '<C-\\><C-n><C-w>w',
-    { noremap = true, desc = 'Jump from terminal back to normal window [Dual window]' })
+    { noremap = true, desc = 'Jump from terminal back to normal window [Win Toggl]' })
 
 -----------------
 -- DEVELOPMENT --

@@ -69,3 +69,7 @@ vim.keymap.set('n', '<leader>le', function() builtin.diagnostics({ line_width = 
     { desc = 'List errors' })
 vim.keymap.set('n', '<leader>rr', function() builtin.lsp_references({ show_line = false, trim_text = true }) end,
     { desc = 'List refereces' })
+-- TODO: prefilter this via options?
+vim.keymap.set('n', '<leader>ws', function() builtin.lsp_dynamic_workspace_symbols() end,
+    { desc = 'List workspace symbols (whole project)' })
+vim.keymap.set('n', '<leader>td', function() builtin.lsp_type_definitions() end, { desc = 'List workspace types' })

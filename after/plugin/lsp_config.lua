@@ -12,9 +12,6 @@ local on_attach = function(_, bufnr)
     vim.keymap.set("n", "<leader>ep", function() vim.diagnostic.goto_prev({ severity = 1 }) end, options)
     vim.keymap.set("n", "<leader>.", function() vim.lsp.buf.code_action() end, options)
 
-    -- TODO: this looks more like something for telescope, kind of like grep?
-    vim.keymap.set("n", "<leader>ws", function() vim.lsp.buf.workspace_symbol() end, options)
-
     -- Rename and save everything, cause buffers don't auto save
     vim.keymap.set("n", "<leader>R", function()
         vim.lsp.buf.rename()
@@ -25,10 +22,77 @@ local on_attach = function(_, bufnr)
     print "LSP says gogogo"
 end
 
+------------------
+-- AUTOCOMPLETE --
+------------------
+
+local cmp = require("cmp")
+cmp.setup({
+    snippet = {
+        expand = function(args)
+            -- NOTE: NVIM v0.10+
+            vim.snippet.expand(args.body)
+        end
+    },
+    mapping = cmp.mapping.preset.insert({
+        --TODO: what does scroll docs do?
+        ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+        ['<C-f>'] = cmp.mapping.scroll_docs(4),
+        ['<C-k>'] = cmp.mapping.select_prev_item({ behaviour = cmp.SelectBehavior.Select }),
+        ['<C-j>'] = cmp.mapping.select_next_item({ behaviour = cmp.SelectBehavior.Select }),
+        ['<C-Spcae>'] = cmp.mapping.complete {},
+        ['<CR>'] = cmp.mapping.confirm {
+            behavior = cmp.ConfirmBehavior.Insert,
+            select = true,
+        }
+    }),
+    sources = cmp.config.sources({
+        { name = 'nvim_lsp' },
+    }, {
+        { name = 'buffer' }
+    })
+})
+
+-- completion for git branches etc???
+cmp.setup.filetype('gitcommit', {
+    sources = cmp.config.sources({
+        { name = 'git' },
+    }, {
+        { name = 'buffer' }
+    })
+})
+-- provides completion for search etc
+-- TODO: do i need this?
+cmp.setup.cmdline({ '/', '?' }, {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = {
+        { name = 'buffer' }
+    }
+})
+
+-- TODO: what exactly does this do?
+cmp.setup.cmdline(':', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = cmp.config.sources({
+        { name = 'path' },
+    }, {
+        { name = 'cmdline' }
+    }),
+    matching = { disallow_symbol_nonprefix_matching = false }
+})
+
+----------
+-- LSPS --
+----------
+
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
 require("lspconfig").lua_ls.setup {
-    on_attach = on_attach
+    on_attach = on_attach,
+    capabilities = capabilities
 }
 
 require("lspconfig").clangd.setup {
-    on_attach = on_attach
+    on_attach = on_attach,
+    capabilities = capabilities
 }
