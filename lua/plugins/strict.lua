@@ -41,5 +41,8 @@ return {
                 vim.keymap.set("n", "<leader>dd", function() vim.cmd("windo diffthis") end, { desc = "diff dis - Diff current open buffers" })
             }
         end
+    },
+    {
+        'nvim-treesitter/nvim-treesitter'
     }
 }
