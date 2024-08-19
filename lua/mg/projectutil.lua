@@ -7,7 +7,7 @@ local function delim()
     return is_windows and "\\" or "/"
 end
 
-local debug = true
+local debug = false
 local debug_buffer = nil
 
 --TODO: extract to generalized debug functions?
@@ -53,9 +53,10 @@ local function getParentDir(path)
 end
 
 
+-- TODO: might return multiple files?!
 local function searchPatternInDir(searchPattern, dir)
+    assert(searchPattern, "SearchPattern can not be nil!")
     -- NOTE: returns a string containing the file paths
-    -- TODO: does this path work also on linux?
     local foundFiles = vim.fn.glob(dir .. delim() .. searchPattern)
 
     if foundFiles and foundFiles ~= "" then
