@@ -6,7 +6,7 @@ return {
     {
         "folke/todo-comments.nvim",
         lazy = false,
-        opts = {signs = false}
+        opts = { signs = false }
     },
     {
         'nvim-telescope/telescope.nvim',

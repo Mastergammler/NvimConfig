@@ -40,8 +40,9 @@ cmp.setup({
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-k>'] = cmp.mapping.select_prev_item({ behaviour = cmp.SelectBehavior.Select }),
         ['<C-j>'] = cmp.mapping.select_next_item({ behaviour = cmp.SelectBehavior.Select }),
-        -- this opens the auto complete line
-        ['<Tab>'] = cmp.mapping.complete {},
+        -- this opens the auto complete line, but i usually don't use this
+        -- . doesn't really work for this
+        --['<C-.>'] = cmp.mapping.complete {},
         ['<CR>'] = cmp.mapping.confirm {
             behavior = cmp.ConfirmBehavior.Insert,
             select = true,

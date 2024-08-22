@@ -26,10 +26,15 @@ vim.keymap.set("n", "<leader>wh", "<C-w>h", { noremap = true, desc = 'Window h -
 vim.keymap.set("n", "<leader>w/", vim.cmd.vs, { noremap = true, desc = 'Split window right' })
 vim.keymap.set("n", "<leader>w-", vim.cmd.split, { noremap = true, desc = 'Split window below' })
 
-vim.keymap.set('n', "<C-k>", "<cmd>cnext<CR>", { desc = 'Quickfix next' })
-vim.keymap.set('n', "<C-j>", "<cmd>cprev<CR>", { desc = 'Quickfix previous' })
+vim.keymap.set({ 'n' }, "<C-k>", "<cmd>cnext<CR>", { desc = 'Quickfix next' })
+vim.keymap.set({ 'n' }, "<C-j>", "<cmd>cprev<CR>", { desc = 'Quickfix previous' })
 vim.keymap.set('n', "<leader>k", "<cmd>lnext<CR>", { desc = 'Next location within buffer' })
 vim.keymap.set('n', "<leader>j", "<cmd>lprev<CR>", { desc = 'Previous location within buffer' })
+-- FIXME: this doesn't work
+vim.keymap.set({ 'c' }, "<C-k>", "<Down>", { desc = 'Quickfix next', noremap = true })
+vim.keymap.set({ 'c' }, "<C-j>", "<Up>", { desc = 'Quickfix previous', noremap = true })
+--FIXME: This doesn't work either, maybe they are already defined as noremap?
+--vim.keymap.set('c', "<CR>", 'pumvisible() ? "<C-y>" : "<CR>"', { expr = true, noremap = true })
 
 -----------------------
 -- TEXT MANIPULATION --
