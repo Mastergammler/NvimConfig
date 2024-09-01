@@ -1,5 +1,6 @@
 local tele = require('telescope')
 local builtin = require('telescope.builtin')
+local todocomments = require('todo-comments')
 
 tele.setup {
     defaults = {
@@ -73,3 +74,15 @@ vim.keymap.set('n', '<leader>rr', function() builtin.lsp_references({ show_line 
 vim.keymap.set('n', '<leader>ws', function() builtin.lsp_dynamic_workspace_symbols() end,
     { desc = 'List workspace symbols (whole project)' })
 vim.keymap.set('n', '<leader>td', function() builtin.lsp_type_definitions() end, { desc = 'List workspace types' })
+
+
+---------------------
+--  OTHER PLUGINS  --
+---------------------
+
+vim.keymap.set('n', "<leader>lt", ":TodoTelescope<CR>",
+    { desc = "list todos -  lists all todos (unfiltered by type)" })
+-- FIXME: these don't work? Not sure why they don't
+vim.keymap.set('n', "<leader>tn", function() todocomments.jump_next() end, { desc = "todo next - jump to next todo" })
+vim.keymap.set('n', "<leader>tp", function() todocomments.jump_prev() end,
+    { desc = "todo previous - jump to previous todo" })

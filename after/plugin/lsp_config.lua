@@ -1,5 +1,6 @@
 require("mason").setup();
 require("mason-lspconfig").setup();
+util = require("mg.projectutil")
 
 local on_attach = function(_, bufnr)
     local options = { buffer = bufnr, remap = false }
@@ -115,10 +116,20 @@ require("lspconfig").clangd.setup {
     capabilities = capabilities
 }
 
-require("lspconfig").omnisharp.setup {
-    on_attach = on_attach,
-    capabilities = capabilities
-}
+if util.is_windows() then
+    -- FIXME: for some reason it is not installable on ubuntu
+    -- but omnisharp worked fine without a problem
+    -- maybe it has something to do with F#, which has to be installed extra?
+    require("lspconfig").csharp_ls.setup {
+        on_attach = on_attach,
+        capabilities = capabilities
+    }
+else
+    require("lspconfig").omnisharp.setup {
+        on_attach = on_attach,
+        capabilities = capabilities
+    }
+end
 
 require("lspconfig").jsonls.setup {
     on_attach = on_attach,

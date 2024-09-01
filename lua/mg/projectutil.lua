@@ -2,6 +2,10 @@
 -- Util funcitons for determine project paths / files etc
 --]]
 
+local function isWindows()
+    return vim.loop.os_uname().sysname:match("Windows")
+end
+
 local function delim()
     local is_windows = vim.loop.os_uname().sysname:match("Windows")
     return is_windows and "\\" or "/"
@@ -121,5 +125,6 @@ end, { desc = "go command!!!! - runs a test function somewhere" });
 
 return {
     print_execution_time = printExecutionTime,
-    find_project_file = findProjectFile
+    find_project_file = findProjectFile,
+    is_windows = isWindows
 }
