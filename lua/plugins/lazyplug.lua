@@ -16,5 +16,9 @@ return {
     {
         'nvim-lua/plenary.nvim',
         lazy = true
+    },
+    {
+        'stevearc/oil.nvim',
+        lazy = true
     }
 }

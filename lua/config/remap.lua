@@ -10,7 +10,9 @@ vim.keymap.set("n", "<leader>", "<nop>", { desc = 'Single leader press does noth
 -- NAVIGATION --
 ----------------
 
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex, { desc = 'Project View (show current folder files' })
+-- NOTE: netrw is was broken by some update probably, so i'm using 'oil' now
+--vim.keymap.set("n", "<leader>pv", vim.cmd.Ex, { desc = 'Project View (show current folder files' })
+vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directior (via oil)" })
 
 -- TODO: this doesn't work as intended, because the buffer order is not consistent
 -- with the usage
