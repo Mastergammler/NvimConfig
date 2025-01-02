@@ -37,3 +37,9 @@ vim.opt.clipboard:append('unnamed,unnamedplus')
 -- we don't want to change the dir automatically everywhere
 -- else the cmd of a new terminal will not be the root project dir
 vim.opt.autochdir = false
+
+local util = require("mg.projectutil")
+
+if util.is_windows then
+    vim.o.shell = "mgsh.exe"
+end
