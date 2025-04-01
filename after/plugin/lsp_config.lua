@@ -145,3 +145,10 @@ require("lspconfig").tsserver.setup {
     on_attach = on_attach,
     capabilities = capabilities
 }
+
+require("lspconfig").powershell_es.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+    -- name on windows is 'powershell' not 'pwsh'
+    cmd = { "powershell", "-NoLogo", "-NoProfile", "-Command", "& 'C:\\Users\\hoppe\\AppData\\Local\\nvimv2-data\\mason\\packages\\powershell-editor-services/PowerShellEditorServices/Start-EditorServices.ps1' -BundledModulesPath 'C:\\Users\\hoppe\\AppData\\Local\\nvimv2-data\\mason\\packages\\powershell-editor-services' -LogPath 'C:\\Users\\hoppe\\AppData\\Local\\Temp\\nvimv2/powershell_es.log' -SessionDetailsPath 'C:\\Users\\hoppe\\AppData\\Local\\Temp\\nvimv2/powershell_es.session.json' -FeatureFlags @() -AdditionalModules @() -HostName nvim -HostProfileId 0 -HostVersion 1.0.0 -Stdio -LogLevel Normal" }
+}
