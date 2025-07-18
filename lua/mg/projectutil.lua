@@ -3,7 +3,7 @@
 --]]
 
 local function isWindows()
-    return vim.loop.os_uname().sysname:match("Windows")
+    return vim.loop.os_uname().sysname:match("Windows") ~= nil
 end
 
 local function delim()

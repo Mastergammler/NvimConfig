@@ -116,20 +116,10 @@ require("lspconfig").clangd.setup {
     capabilities = capabilities
 }
 
-if util.is_windows() then
-    -- FIXME: for some reason it is not installable on ubuntu
-    -- but omnisharp worked fine without a problem
-    -- maybe it has something to do with F#, which has to be installed extra?
-    require("lspconfig").csharp_ls.setup {
-        on_attach = on_attach,
-        capabilities = capabilities
-    }
-else
-    require("lspconfig").omnisharp.setup {
-        on_attach = on_attach,
-        capabilities = capabilities
-    }
-end
+require("lspconfig").csharp_ls.setup {
+    on_attach = on_attach,
+    capabilities = capabilities
+}
 
 require("lspconfig").jsonls.setup {
     on_attach = on_attach,
@@ -141,7 +131,7 @@ require("lspconfig").eslint.setup {
     capabilities = capabilities
 }
 
-require("lspconfig").tsserver.setup {
+require("lspconfig").ts_ls.setup {
     on_attach = on_attach,
     capabilities = capabilities
 }

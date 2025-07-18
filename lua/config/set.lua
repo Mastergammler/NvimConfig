@@ -30,6 +30,10 @@ vim.opt.updatetime = 1000
 vim.opt.colorcolumn = "120"
 vim.opt.cursorline = true
 
+-- without setting hegiht to 2 the 'type ENTER ..` prompt will always appear
+-- and interrupt the startup flow
+vim.opt.cmdheight = 2
+
 -- enabeling copy paste by default
 -- NOTE: requires a tool like xclip to be install on linux
 vim.opt.clipboard:append('unnamed,unnamedplus')
@@ -40,6 +44,6 @@ vim.opt.autochdir = false
 
 local util = require("mg.projectutil")
 
-if util.is_windows then
+if util.is_windows() then
     vim.o.shell = "mgsh.exe"
 end
