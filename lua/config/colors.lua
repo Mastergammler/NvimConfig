@@ -27,3 +27,6 @@ vim.api.nvim_set_hl(0, "@boolean", { link = "@number" })
 vim.api.nvim_set_hl(0, "@conditional", { fg = "#7dddff" })
 vim.api.nvim_set_hl(0, "@repeat", { link = "@conditional" })
 vim.api.nvim_set_hl(0, "@exception", { link = "@conditional" })
+
+-- setting fold color to comment color for treesitter
+vim.cmd("hi! link Folded Comment")

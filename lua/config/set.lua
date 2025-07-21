@@ -42,6 +42,13 @@ vim.opt.clipboard:append('unnamed,unnamedplus')
 -- else the cmd of a new terminal will not be the root project dir
 vim.opt.autochdir = false
 
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldtext = "getline(v:foldstart)"
+-- loading large files gets very slow when we have fold enabled by default
+-- therefore if you need fold use the 'zi' command to toggle it per buffer
+vim.opt.foldenable = false
+
 local util = require("mg.projectutil")
 
 if util.is_windows() then

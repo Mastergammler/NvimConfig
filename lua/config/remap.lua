@@ -1,3 +1,5 @@
+local refactor = require('mg.refactoring.refactoringutil')
+
 vim.keymap.set("n", "<leader>fs", function()
     vim.lsp.buf.format()
     vim.cmd.update()
@@ -43,6 +45,9 @@ vim.keymap.set({ 'c' }, "<C-j>", "<Up>", { desc = 'Quickfix previous', noremap =
 -----------------------
 
 vim.keymap.set("n", "<leader>ho", vim.cmd.nohlsearch, { desc = 'highlight off - deselect highlight' })
+vim.keymap.set("n", "U", "<C-r>");
+vim.keymap.set("n", "<leader>mf", refactor.git_move_current,
+    { desc = "git [M]ove [f]ile - rename file with git tracking" })
 
 --------------
 -- TERMINAL --
