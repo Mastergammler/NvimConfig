@@ -131,7 +131,7 @@ require("lspconfig").eslint.setup {
     capabilities = capabilities
 }
 
-require("lspconfig").ts_ls.setup {
+require("lspconfig").tsserver.setup {
     on_attach = on_attach,
     capabilities = capabilities
 }
