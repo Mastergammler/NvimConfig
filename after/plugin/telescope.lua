@@ -39,7 +39,10 @@ vim.keymap.set('n', '<leader>rf', builtin.oldfiles, { desc = 'Find recent files'
 vim.keymap.set('n', '<leader>lg', '<cmd>Telescope live_grep<cr>',
     { noremap = true, silent = true, desc = 'Live grep - Search string live (working dir)' })
 --TODO: preview doesn't work, also doesn't only take working dir
-vim.keymap.set('n', '<leader>ss', function() builtin.grep_string({ search = vim.fn.input("grep > ") }) end,
+vim.keymap.set('n', '<leader>ss', function()
+        local query = vim.fn.input("grep > ");
+        builtin.grep_string({ search = query })
+    end,
     { desc = 'Search string (working dir)' })
 vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = 'Search (current) word' })
 

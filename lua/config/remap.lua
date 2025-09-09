@@ -72,3 +72,9 @@ end, { desc = 'Saves and runs the current file' })
 
 -- TODO: reload module (for lua dev)
 -- TODO: plenary test file (do i need it?)
+
+
+vim.keymap.set("n", "<leader>cc", function()
+    vim.cmd('source' .. vim.fn.stdpath('config') .. '/init.lua')
+    vim.notify('Config reloaded!', vim.log.levels.INFO)
+end, { desc = 'Reload nvim config' })
