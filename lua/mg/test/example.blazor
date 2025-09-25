@@ -1,0 +1,153 @@
+@page "/monthly"
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+@inject AccountRepository acc;
+@inject MonthlyRepository repo;
+@inject TagRepository tags;
+@inject TransactionRepository tran;
+
+<PageTitle>Monthly Balance</PageTitle>
+<h1> Monthly </h1>
+<h1> hello world there</h1>
+
+<!-- TODO: year can't be null, else this doesn't make any sense? -->
+@if(accountList is not null && yearList is not null) {
+<div class="row">
+    <div class="col-sm-2">
+        <label class="form-label">Account Filter: </label>
+       <EntitySelect T="Account" @bind-Value="Filter.Account" Items="accountList" EmptyOption="false"
+            @bind-Value:after="Refresh" />
+    </div>
+
+    <div class="col-sm-2">
+        <label class="form-label"> Year Filter: </label>
+        <InputSelect @bind-Value="Filter.Year" class="form-select" @bind-Value:after="Refresh">
+            <option value="">Year selection ...</option>
+            @foreach(var year in yearList)
+            {
+            <option>@year</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="col-sm-4">
+        <label class="form-label">Tags</label>
+        <TagInput @bind-Value="Filter.Tags" @bind-Value:after="Refresh" />
+    </div>
+
+</div>
+}
+
+<br>
+
+@if(Model is null){
+<p><em>Please select a apropriate year</em></p>
+} else {
+<table class="table">
+    <thead class="table-dark">
+        <tr>
+            <th>Month</th>
+            @foreach(var column in Model.TagColumns)
+            {
+            <th>@FindTagName(column.TagBit)</th>
+            }
+            <th>Spent</th>
+            <th class="text-end">Balance</th>
+            <th>Account</th>
+        </tr>
+        <tr>
+            <td></td>
+            @foreach(var column in Model.TagColumns)
+            {
+            <td></td>
+            }
+            <td></td>
+            <td></td>
+            <td>@Model.AccountSoY.ToString("0.00")</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var month in Model.Months)
+        {
+        <tr class="@GetRowStyle(month.Month)">
+            <td>@DateTimeFormatInfo.CurrentInfo.GetMonthName(month.Month)</td>
+            @foreach(var column in month.TagColumns)
+            {
+            <td>@column.Balance.ToString("0.00")</td>
+            }
+            <td>@month.SpentTotal.ToString("0.00")</td>
+            <td class="text-end @GetRowStyle(@month.Balance,500)">@month.Balance.ToString("0.00")</td>
+            <td class="@GetRowStyle(@month.Account,1350)"><b>@month.Account.ToString("0.00")</b></td>
+        </tr>
+        }
+    </tbody>
+    <tfoot class="table-secondary">
+        <tr>
+            <td>Total</td>
+            @foreach(var column in Model.TagColumns)
+            {
+            <td>@column.Balance.ToString("0.00")</td>
+            }
+            <td><b>@Model.SpentTotal.ToString("0.00")</b></td>
+            <td class="text-end"><b>@Model.TotalBalance.ToString("0.00")</b></td>
+            <td></td>
+        </tr> 
+        <tr> 
+            <td>Average</td>
+            @foreach(var column in Model.TagColumns)
+            {
+            <td>@column.Average.ToString("0.00")</td>
+            }
+            <td>@Model.SpentAverage.ToString("0.00")</td>
+            <td class="text-end">@Model.AverageBalance.ToString("0.00")</td>
+            <td></td>
+        </tr>
+    </tfoot>
+</table>
+}
+
+@code {
+
+private MonthlyModel Model = null;
+
+private Account[]? accountList = null;
+private int[]? yearList = null;
+private Tag[] tagList = null;
+
+private MonthlyFilter Filter = null;
+
+protected override async Task OnInitializedAsync() {
+Filter = new();
+accountList = acc.GetAll();
+tagList = tags.GetAll();
+Filter.Account = accountList[0];
+
+Refresh();
+}
+
+private void Refresh(){
+yearList = tran.GetYears(Filter.Account.ID);
+
+//TODO: check if year is in year list
+
+if(Filter.Year is not null){
+Model = repo.Filtered(Filter);
+} else {
+Model = null;
+}}
+
+private string FindTagName(long bitValue)
+{
+return tagList.First(t => t.BitValue == bitValue).Name;
+}
+
+private string GetRowStyle(int monthValue){
+string classes = "";
+if(monthValue < 4 || (monthValue> 6 && monthValue < 10)) { classes +="table-custom-shade-1 " ; } else { classes
+        +="table-custom-shade-2 " ; } if(monthValue==4 || monthValue==7 || monthValue==10) { classes
+        +="table-top-border" ; } if(monthValue==12) { classes +=" table-bottom-border" ; } return classes; } private
+        string GetRowStyle(decimal val, int threshold) { if(val < -threshold) return "table-danger" ; if(val>
+       threshold) return "table-success";
+        return "table-warning";
+        }
+        }
