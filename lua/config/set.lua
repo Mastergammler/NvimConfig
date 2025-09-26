@@ -48,6 +48,8 @@ vim.opt.foldtext = "getline(v:foldstart)"
 -- loading large files gets very slow when we have fold enabled by default
 -- therefore if you need fold use the 'zi' command to toggle it per buffer
 vim.opt.foldenable = false
+-- treating _ as a word separator as well
+vim.opt.iskeyword:remove('_')
 
 local util = require("mg.projectutil")
 
