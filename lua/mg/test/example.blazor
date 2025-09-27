@@ -25,7 +25,7 @@
             <option value="">Year selection ...</option>
             @foreach(var year in yearList)
             {
-            <option>@year</option>
+                <option>@year</option>
             }
         </InputSelect>
     </div>
@@ -39,6 +39,10 @@
 }
 
 <br>
+
+"Why? Because strings have a dedicated start and end!"
+@thisisMyThing"Thatgoesintoastring"
+@thisVar="AnotherStringThing"
 
 @if(Model is null){
 <p><em>Please select a apropriate year</em></p>
@@ -98,7 +102,7 @@
             {
             <td>@column.Average.ToString("0.00")</td>
             }
-            <td>@Model.SpentAverage.ToString("0.00")</td>
+            <td>Model.SpentAverage.ToString("0.00")</td>
             <td class="text-end">@Model.AverageBalance.ToString("0.00")</td>
             <td></td>
         </tr>
@@ -108,46 +112,47 @@
 
 @code {
 
-private MonthlyModel Model = null;
+    private MonthlyModel Model = null;
 
-private Account[]? accountList = null;
-private int[]? yearList = null;
-private Tag[] tagList = null;
+    // this comment is not detected ...
+    private Account[]? accountList = null;
+    private int[]? yearList = null;
+    private Tag[] tagList = null;
 
-private MonthlyFilter Filter = null;
+    private MonthlyFilter Filter = null;
 
-protected override async Task OnInitializedAsync() {
-Filter = new();
-accountList = acc.GetAll();
-tagList = tags.GetAll();
-Filter.Account = accountList[0];
+    protected override async Task OnInitializedAsync() {
+        Filter = new();
+        accountList = acc.GetAll();
+        tagList = tags.GetAll();
+        Filter.Account = accountList[0];
 
-Refresh();
-}
+        Refresh();
+    }
 
-private void Refresh(){
-yearList = tran.GetYears(Filter.Account.ID);
+    private void Refresh(){
+    yearList = tran.GetYears(Filter.Account.ID);
 
 //TODO: check if year is in year list
 
 if(Filter.Year is not null){
-Model = repo.Filtered(Filter);
+    Model = repo.Filtered(Filter);
 } else {
-Model = null;
+    Model = null;
 }}
 
 private string FindTagName(long bitValue)
 {
-return tagList.First(t => t.BitValue == bitValue).Name;
+    return tagList.First(t => t.BitValue == bitValue).Name;
 }
 
 private string GetRowStyle(int monthValue){
 string classes = "";
-if(monthValue < 4 || (monthValue> 6 && monthValue < 10)) { classes +="table-custom-shade-1 " ; } else { classes
+if(monthValue < 4 || (monthValue> 6 && monthValue < 10)) { classes += "table-custom-shade-1 " ; } else { classes
         +="table-custom-shade-2 " ; } if(monthValue==4 || monthValue==7 || monthValue==10) { classes
         +="table-top-border" ; } if(monthValue==12) { classes +=" table-bottom-border" ; } return classes; } private
         string GetRowStyle(decimal val, int threshold) { if(val < -threshold) return "table-danger" ; if(val>
        threshold) return "table-success";
         return "table-warning";
         }
-        }
+}

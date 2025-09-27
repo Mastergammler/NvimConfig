@@ -1,3 +1,5 @@
+local timing = require("mg.performance.timing")
+
 local M = {}
 
 local ParserState = {
@@ -95,6 +97,186 @@ local function highlight_cs(state, col, c)
     end
 end
 
+local TokenType = setmetatable({
+        NONE = 0,
+        STRING = 1,
+        CS_IDENTIFIER = 2,
+        OPERATOR = 3,
+        HTML_TAG = 4,
+    },
+    {
+        __index = function(_, k)
+            error("Undefind TokenType enum member: " .. tostring(k), 2)
+        end,
+        __newindex = function()
+            error("Read-only enum", 2)
+        end,
+    });
+
+local TokenizerState = {
+    tokenStart = 0,
+    tokenEnd = 0,
+    -- maybe more a token changed?
+    isTokenEnd = false,
+    endsPreviousToken = false,
+    withinToken = false,
+    tokenType = TokenType.NONE
+}
+
+local function reset_tokenizer(state)
+    state.withinToken = false
+    state.isTokenEnd = false
+    state.endsPreviousToken = false
+    state.tokenType = TokenType.NONE
+    state.previousType = TokenType.NONE
+    state.tokenStart = 0
+    state.tokenEnd = -1
+end
+
+local function isPartOf(c, charSet)
+    return string.find(charSet, c, 1, true) ~= nil
+end
+
+-- TODO: i need some "token end:" functionality
+-- when a new token starts, then i automatically should end the previous one!
+local function tokenize(state, c, cidx)
+    local withinString = state.withinToken and state.tokenType == TokenType.STRING
+    local withinHtmlTag = state.withinToken and state.tokenType == TokenType.HTML_TAG
+
+    if c == '"' then
+        -- TODO: not sure if this is right?
+        if withinString then
+            state.tokenEnd = cidx + 1 -- after current
+            state.isTokenEnd = true
+            state.endsCurrentToken = true
+            state.withinToken = false
+        elseif state.withinToken then
+            -- FIXME: this doen't work, because i can't set the start index
+            state.tokenEnd = cidx
+            state.previousType = state.tokenType
+            state.tokenType = TokenType.STRING
+            state.endsPreviousToken = true
+            state.withinToken = true
+        else
+            state.tokenStart = cidx
+            state.withinToken = true
+            state.tokenType = TokenType.STRING
+        end
+        -- TODO: these 2 types don't end the previous taken correctly
+        -- -> because they override the start index ...
+    elseif not withinString and c == '@' then
+        state.tokenStart = cidx
+        state.tokenType = TokenType.CS_IDENTIFIER
+        state.withinToken = true
+        state.endsPreviousToken = true
+        -- TODO: this has different meanings for html & cs!
+    elseif not withinString and c == '<' then
+        state.tokenStart = cidx
+        state.tokenType = TokenType.HTML_TAG
+        state.withinToken = true
+        state.endsPreviousToken = true
+    elseif withinHtmlTag and c == '>' then
+        state.tokenEnd = cidx + 1
+        state.withinToken = false
+        state.isTokenEnd = true
+        state.endsCurrentToken = true
+    elseif not withinString and isPartOf(c, " ;()[]{}") then
+        state.tokenEnd = cidx
+        state.previousType = state.tokenType
+        state.tokenType = TokenType.NONE
+        state.endsPreviousToken = true
+        state.withinToken = false
+        state.isTokenEnd = true -- single symbol token
+    elseif not withinString and not withinHtmlTag and isPartOf(c, "=+-<>?!*/|&") then
+        -- FIXME: this doesn't work because i can't set the start index either
+        state.tokenEnd = cidx
+        state.previousType = state.tokenType
+        state.tokenType = TokenType.OPERATOR
+        state.endsPreviousToken = true
+        state.withinToken = false
+        state.isTokenEnd = true -- single symbol token
+    end
+end
+
+local function determineHighlight(hl, tokenizerState, previousToken)
+    local tokenType = (previousToken and tokenizerState.previousType) or tokenizerState.tokenType
+
+    if tokenType == TokenType.STRING then
+        hl.group = "@string"
+    elseif tokenType == TokenType.CS_IDENTIFIER then
+        hl.group = "@keyword"
+    elseif tokenType == TokenType.OPERATOR then
+        hl.group = "@operator"
+    elseif tokenType == TokenType.HTML_TAG then
+        hl.group = "@attribute"
+    elseif tokenType == TokenType.NONE then
+        hl.group = "@variable"
+    end
+
+    if previousToken or tokenizerState.endsCurrentToken then
+        hl.startIdx = tokenizerState.tokenStart
+        hl.endIdx = tokenizerState.tokenEnd
+    else
+        hl.startIdx = tokenizerState.tokenEnd
+        hl.endIdx = tokenizerState.tokenEnd + 1
+    end
+end
+
+local function highlightToken(highlighterState, tokenizerState)
+    if not tokenizerState.isTokenEnd and not tokenizerState.endsPreviousToken then return end
+
+    local curHl = {}
+    local prevHl = {}
+    curHl.startIdx = 0
+    curHl.endIdx = -1
+    prevHl.startIdx = 0
+    prevHl.endIdx = -1
+
+    if tokenizerState.endsPreviousToken then
+        determineHighlight(prevHl, tokenizerState, true)
+        --[[if prevHl.endIdx > highlighterState.linelength then
+            prevHl.endIdx = -1
+        end]] --
+        vim.api.nvim_buf_add_highlight(highlighterState.bufnr, highlighterState.namespace, prevHl.group,
+            highlighterState.lineidx,
+            prevHl.startIdx, prevHl.endIdx)
+        tokenizerState.endsPreviousToken = false
+    end
+
+    if tokenizerState.isTokenEnd then
+        determineHighlight(curHl, tokenizerState, false)
+        vim.api.nvim_buf_add_highlight(highlighterState.bufnr, highlighterState.namespace, curHl.group,
+            highlighterState.lineidx,
+            curHl.startIdx, curHl.endIdx)
+        tokenizerState.isTokenEnd = false
+        tokenizerState.endsCurrentToken = false
+    end
+end
+
+local function tokenizer_highlight()
+    local bufnr = vim.api.nvim_get_current_buf()
+    local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+    local namespace = vim.api.nvim_create_namespace("Blazor")
+    vim.api.nvim_buf_clear_namespace(bufnr, namespace, 0, -1)
+
+    local tokenizerState = {}
+    local highlighterState = {}
+    reset_tokenizer(tokenizerState)
+    highlighterState.bufnr = bufnr
+    highlighterState.namespace = namespace
+
+    for lineNo, line in ipairs(lines) do
+        highlighterState.lineidx = lineNo - 1
+        highlighterState.linelength = #line
+        reset_tokenizer(tokenizerState)
+        for col = 1, #line do
+            -- lua is 1 based -> so we convent it back to 0 based
+            tokenize(tokenizerState, line:sub(col, col), col - 1)
+            highlightToken(highlighterState, tokenizerState)
+        end
+    end
+end
+
 local function highlight()
     local bufnr = vim.api.nvim_get_current_buf()
     local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
@@ -146,13 +328,11 @@ local function highlight()
 end
 
 local function highlight_perf()
-    local startTime = os.clock()
-    highlight();
-    local endTime = os.clock()
-    print(string.format("Execution time: %.3f ms", (endTime - startTime) * 1000))
+    timing.measure(tokenizer_highlight)
 end
 
-vim.keymap.set("n", "<leader>rh", highlight_perf, { desc = 'Runs the highlighter (for testing)' })
+vim.keymap.set("n", "<leader>rh", highlight_perf, { desc = 'Run highlighter (for testing)' })
 
 M.highlight = highlight
+M.highlight2 = tokenizer_highlight
 return M
