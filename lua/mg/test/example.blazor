@@ -10,7 +10,6 @@
 <h1> Monthly </h1>
 <h1> hello world there</h1>
 
-<!-- TODO: year can't be null, else this doesn't make any sense? -->
 @if(accountList is not null && yearList is not null) {
 <div class="row">
     <div class="col-sm-2">
@@ -40,12 +39,16 @@
 
 <br>
 
+<TagTest"StringFollows">
 "Why? Because strings have a dedicated start and end!"
+"Another string"
 @thisisMyThing"Thatgoesintoastring"
 @thisVar="AnotherStringThing"
+@isthisbecause"Oftheothertoken?"
+@alone
 
 @if(Model is null){
-<p><em>Please select a apropriate year</em></p>
+    <p><em>Please select a apropriate year</em></p>
 } else {
 <table class="table">
     <thead class="table-dark">
@@ -77,7 +80,7 @@
             <td>@DateTimeFormatInfo.CurrentInfo.GetMonthName(month.Month)</td>
             @foreach(var column in month.TagColumns)
             {
-            <td>@column.Balance.ToString("0.00")</td>
+                <td>@column.Balance.ToString("0.00")</td>
             }
             <td>@month.SpentTotal.ToString("0.00")</td>
             <td class="text-end @GetRowStyle(@month.Balance,500)">@month.Balance.ToString("0.00")</td>
