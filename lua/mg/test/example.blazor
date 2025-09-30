@@ -5,10 +5,13 @@
 @inject MonthlyRepository repo;
 @inject TagRepository tags;
 @inject TransactionRepository tran;
+@inject WhatIsHappening ing; // dunno? this is applied to theend?
 
 <PageTitle>Monthly Balance</PageTitle>
 <h1> Monthly </h1>
 <h1> hello world there</h1>
+
+<Tag @bind-something="SomeString" />
 
 @if(accountList is not null && yearList is not null) {
 <div class="row">

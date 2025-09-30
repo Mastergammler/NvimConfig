@@ -330,24 +330,26 @@ end
 
 local CsParser = {
     startTokens = "@",
-    splitTokens = " =(){};",
+    splitTokens = " =(){};</",
     -- NL only
     endTokens = "",
     lineStartIdx = -1,
     colStartIdx = -1,
     hlGroup = "@keyword",
+    splitHl = "@operator",
     -- TODO: how do make this work?
     endOnNewline = true
 }
 
 local TagParser = {
-    startTokens = "<",
+    startTokens = "</",
     -- here NO newline!
     endTokens = ">",
     splitTokens = " =",
     lineStartIdx = -1,
     colStartIdx = -1,
     hlGroup = "@attribute",
+    splitHl = "@operator",
     endOnNewline = true
 }
 
@@ -358,8 +360,75 @@ local StringParser = {
     lineStartIdx = -1,
     colStartIdx = -1,
     hlGroup = "@string",
+    splitHl = "@string",
     endOnNewline = true
 }
+
+local function selectParserByStartToken(state, lineNo, col, c)
+    if isPartOf(c, StringParser.startTokens) then
+        state.selectedParser = StringParser
+    elseif isPartOf(c, TagParser.startTokens) then
+        state.selectedParser = TagParser
+    elseif isPartOf(c, CsParser.startTokens) then
+        state.selectedParser = CsParser
+    else
+        -- no new parser start
+    end
+
+    if state.selectedParser ~= nil then
+        state.selectedParser.lineStartIdx = lineNo - 1
+        state.selectedParser.colStartIdx = col - 1
+    end
+end
+
+local function applyParserEndHighlight(parserState, col)
+    parserState.selectedParser.colEndIdx = col
+    vim.api.nvim_buf_add_highlight(parserState.bufnr, parserState.namespace, parserState.selectedParser.hlGroup,
+        parserState.selectedParser.lineStartIdx,
+        parserState.selectedParser.colStartIdx, parserState.selectedParser.colEndIdx)
+    parserState.selectedParser = parserState.previousParser
+    if parserState.selectedParser ~= nil then
+        parserState.selectedParser.colStartIdx = col
+    end
+end
+
+local function applyParserSplitHighlight(parserState, col)
+    parserState.selectedParser.colEndIdx = col
+    vim.api.nvim_buf_add_highlight(parserState.bufnr, parserState.namespace, parserState.selectedParser.hlGroup,
+        parserState.selectedParser.lineStartIdx,
+        parserState.selectedParser.colStartIdx, parserState.selectedParser.colEndIdx)
+
+    -- split token himself
+    vim.api.nvim_buf_add_highlight(parserState.bufnr, parserState.namespace, parserState.selectedParser.splitHl,
+        parserState.selectedParser.lineStartIdx,
+        col - 1, col)
+
+    --FIXME: wrong start idx? -> because we're a new parser now
+    parserState.selectedParser.colStartIdx = col + 1
+    parserState.previousParser = parserState.selectedParser;
+    parserState.selectedParser = nil; -- = Trigger new selection
+end
+
+local function applyParserLineEndHighlight(parserState)
+    parserState.selectedParser.colEndIdx = -1
+    vim.api.nvim_buf_add_highlight(parserState.bufnr, parserState.namespace, parserState.selectedParser.hlGroup,
+        parserState.selectedParser.lineStartIdx,
+        parserState.selectedParser.colStartIdx, parserState.selectedParser.colEndIdx)
+    parserState.selectedParser = nil
+end
+
+-- within tag, is different again!
+-- -> within tag & within cs can switch @if ... <p> ... else ...<p> ...
+-- => Both need the ability to handle the other!
+-- The deciding queustion is: WHAT does the parser statet need to save?
+-- -> Or is it just a different kind of tokenizer?
+-- I think when to start and end needs to be controlled by the parser?
+-- -> Similarly for end on line or NOT end on line
+-- => That i could tall @code -> always will use CS parser for example
+-- I almost feel like this should create a kind of parser tree,
+-- where each parser call another sub parser for the next token etc
+-- and then it goes back into the current one, then i need to modify start & end index etc
+-- TODO: inclusive exclusive?
 
 local function statefull_highlight()
     local bufnr = vim.api.nvim_get_current_buf()
@@ -367,64 +436,30 @@ local function statefull_highlight()
     local namespace = vim.api.nvim_create_namespace("Blazor")
     vim.api.nvim_buf_clear_namespace(bufnr, namespace, 0, -1)
 
-    local selectedParser = nil
+    local parserState = {}
+    parserState.selectedParser = nil
+    parserState.previousParser = nil
+    parserState.bufnr = bufnr
+    parserState.namespace = namespace
 
     for lineNo, line in ipairs(lines) do
         for col = 1, #line do
             local c = line:sub(col, col)
-            local justStarted = false
-            if selectedParser == nil then
-                if isPartOf(c, StringParser.startTokens) then
-                    selectedParser = StringParser
-                elseif isPartOf(c, TagParser.startTokens) then
-                    selectedParser = TagParser
-                elseif isPartOf(c, CsParser.startTokens) then
-                    selectedParser = CsParser
-                else
-                    -- do nothing
-                end
 
-                if selectedParser ~= nil then
-                    selectedParser.lineStartIdx = lineNo - 1
-                    selectedParser.colStartIdx = col - 1
-                    justStarted = true
+            if parserState.selectedParser ~= nil then
+                if isPartOf(c, parserState.selectedParser.endTokens) then
+                    applyParserEndHighlight(parserState, col)
+                elseif isPartOf(c, parserState.selectedParser.splitTokens) then
+                    applyParserSplitHighlight(parserState, col)
                 end
             end
 
-            -- within tag, is different again!
-            -- -> within tag & within cs can switch @if ... <p> ... else ...<p> ...
-            -- => Both need the ability to handle the other!
-            -- The deciding queustion is: WHAT does the parser statet need to save?
-            -- -> Or is it just a different kind of tokenizer?
-            -- I think when to start and end needs to be controlled by the parser?
-            -- -> Similarly for end on line or NOT end on line
-            -- => That i could tall @code -> always will use CS parser for example
-            -- I almost feel like this should create a kind of parser tree,
-            -- where each parser call another sub parser for the next token etc
-            -- and then it goes back into the current one, then i need to modify start & end index etc
-
-            if selectedParser ~= nil and not justStarted then
-                -- TODO: inclusive exclusive?
-                if isPartOf(c, selectedParser.endTokens) then
-                    selectedParser.colEndIdx = col
-                    vim.api.nvim_buf_add_highlight(bufnr, namespace, selectedParser.hlGroup, selectedParser.lineStartIdx,
-                        selectedParser.colStartIdx, selectedParser.colEndIdx)
-                    selectedParser = nil
-                elseif isPartOf(c, selectedParser.splitTokens) then
-                    -- TODO: evaluate next token differently?
-                    -- -> E.g. change selected parser or something to sub parser
-                    selectedParser.colEndIdx = col
-                    vim.api.nvim_buf_add_highlight(bufnr, namespace, selectedParser.hlGroup, selectedParser.lineStartIdx,
-                        selectedParser.colStartIdx, selectedParser.colEndIdx)
-                    selectedParser.colStartIdx = col
-                end
+            if parserState.selectedParser == nil then
+                selectParserByStartToken(parserState, lineNo, col, c)
             end
         end
-        if selectedParser ~= nil and selectedParser.endOnNewline then
-            selectedParser.colEndIdx = -1
-            vim.api.nvim_buf_add_highlight(bufnr, namespace, selectedParser.hlGroup, selectedParser.lineStartIdx,
-                selectedParser.colStartIdx, selectedParser.colEndIdx)
-            selectedParser = nil
+        if parserState.selectedParser ~= nil and parserState.selectedParser.endOnNewline then
+            applyParserLineEndHighlight(parserState)
         end
     end
 end
