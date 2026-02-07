@@ -106,37 +106,73 @@ cmp.setup.cmdline(':', {
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-require("lspconfig").lua_ls.setup {
+vim.lsp.config.lua_ls = {
+    on_attach = on_attach,
+    capabilities = capabilities,
+    settings = {
+        Lua = {
+            hint = { enable = true }
+        }
+    }
+}
+vim.lsp.config.glsl_analyzer = {
     on_attach = on_attach,
     capabilities = capabilities
 }
 
-require("lspconfig").clangd.setup {
+vim.lsp.config.clangd = {
+    on_attach = on_attach,
+    capabilities = capabilities,
+    settings = {
+        clangd = {
+            InlayHints = {
+                Enabled = true,
+                ParameterNames = true,
+                DeducedTypes = true,
+                Designators = true,
+            },
+            fallbackFlags = { "-std=c++20" },
+        },
+    },
+}
+
+vim.lsp.config.csharp_ls = {
     on_attach = on_attach,
     capabilities = capabilities
 }
 
-require("lspconfig").csharp_ls.setup {
+vim.lsp.config.jsonls = {
     on_attach = on_attach,
     capabilities = capabilities
 }
 
-require("lspconfig").jsonls.setup {
+vim.lsp.config.eslint = {
     on_attach = on_attach,
     capabilities = capabilities
 }
 
-require("lspconfig").eslint.setup {
+vim.lsp.config.ts_ls = {
     on_attach = on_attach,
     capabilities = capabilities
 }
 
-require("lspconfig").ts_ls.setup {
+vim.lsp.config.rust_analyzer = {
     on_attach = on_attach,
-    capabilities = capabilities
+    capabilities = capabilities,
+    settings = {
+        ["rust-analyzer"] = {
+            inlayHints = {
+                chainingHints = { enable = true },
+                closingBraceHints = { enable = true, minLines = 25 },
+                parameterHints = { enable = true },
+                typeHints = { enable = true },
+            },
+        },
+    },
 }
 
-require("lspconfig").powershell_es.setup {
+
+vim.lsp.config.powershell_es = {
     on_attach = on_attach,
     capabilities = capabilities,
     -- name on windows is 'powershell' not 'pwsh'

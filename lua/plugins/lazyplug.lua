@@ -26,6 +26,10 @@ return {
         lazy = true
     },
     {
+        'Glench/vim-jinja2-syntax',
+        lazy = true
+    },
+    {
         "mfussnegger/nvim-dap",
         lacy = true,
         config = function()

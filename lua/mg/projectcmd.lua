@@ -8,13 +8,22 @@ local ProjectType = {
     Gradle = "build.gradle",
     -- TODO: cleanup, this is quite a akward solution
     -- There has to be a better way of handling this ...
+    Cargo = "Cargo.toml",
     SCRIPT = "notafile.nope"
 }
 
+-- TODO: not very flexible alot of duplication of the same thing
+-- for just exchanging the array basically, so should do this better at some point
 local DotnetCommands = {
     build = "dotnet build",
     run = "dotnet run --project",
     test = "dotnet test"
+}
+
+local CargoCommands = {
+    build = "cargo build",
+    run = "cargo run",
+    test = "cargo test"
 }
 
 -- TODO: i want the following
@@ -62,10 +71,12 @@ function createProjectCommand(commandName, cmdappend)
             if type == k and v == ProjectType.CS then
                 local pathQuoted = string.format(' "%s"', projectFile)
                 return DotnetCommands[commandName] .. pathQuoted .. ' ' .. cmdappend
+            elseif type == k and v == ProjectType.Cargo then
+                return CargoCommands[commandName] .. ' ' .. cmdappend
             elseif type == k and v == ProjectType.Gradle then
                 return "Not implemented"
             elseif type == k and v == ProjectType.SCRIPT then
-                return projectFile
+                return projectFile .. ' ' .. cmdappend
             end
         end
     else

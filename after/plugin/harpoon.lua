@@ -32,7 +32,9 @@ function cmd(cmdNo, commandName, cmdappend)
 end
 
 vim.keymap.set("n", "<C-B>", function() cmd(1, "build") end, { desc = "Build project" })
+vim.keymap.set("n", "<leader>bh", function() cmd(1, "build", "-h") end, { desc = "Build project with headers" })
 vim.keymap.set("n", "<C-R>", function() cmd(1, "run") end, { desc = "Run project" })
+vim.keymap.set("n", "<leader>rd", function() cmd(1, "run", "-d") end, { desc = "Run debug project" })
 vim.keymap.set("n", "<C-T>", function() cmd(2, "test") end, { desc = "Test project" })
 vim.keymap.set("n", "<leader>tf", function()
     local fileName = vim.fn.fnamemodify(vim.fn.bufname(), ":t:r")

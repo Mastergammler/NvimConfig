@@ -5,3 +5,10 @@ vim.filetype.add({
         csproj = "xml"
     }
 })
+
+vim.filetype.add({
+    extension = {
+        jinja = "jinja",
+        j2 = "jinja",
+    }
+})

@@ -74,7 +74,16 @@ end, { desc = 'Saves and runs the current file' })
 -- TODO: plenary test file (do i need it?)
 
 
-vim.keymap.set("n", "<leader>cc", function()
-    vim.cmd('source' .. vim.fn.stdpath('config') .. '/init.lua')
-    vim.notify('Config reloaded!', vim.log.levels.INFO)
-end, { desc = 'Reload nvim config' })
+vim.keymap.set("n", "<leader>i", function()
+    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+end)
+
+vim.keymap.set("n", "<leader>cc",
+    function()
+        --vim.cmd('source' .. vim.fn.stdpath('config') .. '/init.lua')
+        --vim.notify('Config reload', vim.log.levels.INFO)
+        require("plenary.reload").reload_module("config")
+        require("plenary.reload").reload_module("mg")
+        vim.notify('Config reload', vim.log.levels.INFO)
+    end,
+    { desc = 'Reload nvim config' })
