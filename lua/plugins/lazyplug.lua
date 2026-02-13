@@ -26,6 +26,11 @@ return {
         lazy = true
     },
     {
+        'nvim-lualine/lualine.nvim',
+        lazy = true,
+        dependencies = { 'nvim-tree/nvim-web-devicons' }
+    },
+    {
         'Glench/vim-jinja2-syntax',
         lazy = true
     },

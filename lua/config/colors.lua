@@ -1,3 +1,6 @@
+-- use ':hi' or ':Telescope highlights' to see the defined colors
+--
+
 --vim.api.nvim_set_hl(0, "Normal", { bg = "none", ctermbg = "none" })
 vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none", ctermbg = "none" })
 vim.api.nvim_set_hl(0, "DiagnosticVirtualTextWarn", { fg = "#807b69" })
@@ -27,6 +30,20 @@ vim.api.nvim_set_hl(0, "@boolean", { link = "@number" })
 vim.api.nvim_set_hl(0, "@conditional", { fg = "#7dddff" })
 vim.api.nvim_set_hl(0, "@repeat", { link = "@conditional" })
 vim.api.nvim_set_hl(0, "@exception", { link = "@conditional" })
+
+
+evenDarkerGreen = "#033c3b"
+darkerGreen = "#074948"
+darkGreen = "#0e5e5c"
+darkishGreen = "#12746c"
+brighterGreen = "#1cad95"
+evenBrighterGreen = "#28c1a8"
+
+-- CPP --
+vim.api.nvim_set_hl(0, "@lsp.type.type.cpp", { link = "@lsp.type.builtinType" })
+-- FIXME: seems like undercurl is not working
+vim.api.nvim_set_hl(0, "@lsp.type.macro",
+    { fg = evenBrighterGreen, bg = evenDarkerGreen, undercurl = false, bold = true })
 
 -- setting fold color to comment color for treesitter
 vim.cmd("hi! link Folded Comment")
