@@ -31,6 +31,25 @@ vim.api.nvim_set_hl(0, "@conditional", { fg = "#7dddff" })
 vim.api.nvim_set_hl(0, "@repeat", { link = "@conditional" })
 vim.api.nvim_set_hl(0, "@exception", { link = "@conditional" })
 
+-- DAP --
+vim.api.nvim_set_hl(0, "DapBreakpointLine", { bg = "#31353f" })
+vim.api.nvim_set_hl(0, "DapBreakpointColor", { link = "@operator" })
+vim.api.nvim_set_hl(0, "DapStopColor", { link = "@conditional" })
+vim.fn.sign_define('DapBreakpoint', {
+    text = '⏺',
+    texthl = 'DapBreakpointColor',
+    linehl = 'DapBreakpointLine',
+    numhl = 'DapBreakpointColor'
+})
+vim.api.nvim_set_hl(0, 'DapStoppedLine', { bg = '#990099', bold = true, fg = '#ffe6ff' })
+vim.fn.sign_define('DapStopped', {
+    text = '⏩',
+    texthl = 'DapStopColor',
+    linehl = 'DapStoppedLine',
+    numhl = 'DopStopColor'
+})
+
+-- LSP --
 
 evenDarkerGreen = "#033c3b"
 darkerGreen = "#074948"
