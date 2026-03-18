@@ -46,4 +46,8 @@ return {
         config = function()
         end
     },
+    {
+        "seblyng/roslyn.nvim",
+        opts = {}
+    }
 }

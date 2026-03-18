@@ -1,4 +1,9 @@
-require("mason").setup();
+require("mason").setup({
+    registries = {
+        "github:mason-org/mason-registry",
+        "github:Crashdummyy/mason-registry"
+    }
+});
 require("mason-lspconfig").setup();
 util = require("mg.projectutil")
 
@@ -120,7 +125,7 @@ vim.lsp.config.glsl_analyzer = {
     capabilities = capabilities
 }
 
-vim.lsp.config.clangd = {
+--[[vim.lsp.config.clangd = {
     on_attach = on_attach,
     capabilities = capabilities,
     settings = {
@@ -134,9 +139,32 @@ vim.lsp.config.clangd = {
             fallbackFlags = { "-std=c++20" },
         },
     },
-}
+}]] --
 
-vim.lsp.config.csharp_ls = {
+vim.lsp.config("clangd", {
+    settings = {
+        clangd = {
+            InlayHints = {
+                Enabled = true,
+                ParameterNames = true,
+                DeducedTypes = true,
+                Designators = true,
+            },
+            fallbackFlags = { "-std=c++20" },
+        },
+    },
+    -- We want to find the references to ALL our local files
+    -- No restrictions, because that is stupid
+    cmd = {
+        "clangd",
+        "--background-index",
+        "--limit-references=0",
+    },
+    capabilities = capabilities,
+    on_attach = on_attach
+})
+
+vim.lsp.config.roslyn = {
     on_attach = on_attach,
     capabilities = capabilities
 }
