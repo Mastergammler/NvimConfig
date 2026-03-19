@@ -1,5 +1,8 @@
 local utils = require 'mg.utils'
 local fs = utils.reload_module("mg.fs")
+
+local ts = require 'nvim-treesitter.ts_utils'
+
 --[[
 
 FUNCTIONS:
@@ -10,10 +13,25 @@ FUNCTIONS:
 
 STEPS:
 
-#NewFile:
+#NewFile (Space-im[port]):
 1. Get current file name
 2. Find compile.cpp uptree
 3. Add '#include <filename>' to the end
+
+#Add Function:
+1. Get current function string (multiline)
+1. Add to correct file
+    - Add to next internal ( Space-in[ternal] )
+        1. Find 'internal.h'
+        2. Add to the end
+    - Add to module header ( Space-he[ader] )
+        1. Get parent folder
+        2. Get header file that matches the dir -> '<dir>'.h
+        3. Add name to the end
+
+#Replace Function:
+> Uses same shortcuts as add function
+> But runs a check before, if it already exists (match by name only)
 
 ** RULES **
 - We always take the next found file uptree!
@@ -31,6 +49,56 @@ local function test()
     fs.file_append(filePath, "#include \"" .. currentRelative .. "\"")
 end
 
+
+local function get_fn_name_under_cursor()
+    local node = ts.get_node_at_cursor()
+
+    while node do
+        if node:type() == 'function_definition' then break end
+        node = node:parent()
+    end
+
+    if not node then
+        print("WARN: No function under cursor")
+        return nil
+    else
+        local bufnr = vim.api.nvim_get_current_buf()
+        -- unclear what decl[0] would be, it seems to be nil
+        local decl = node:field('declarator')[1]
+        local retTypeNode = node:named_child(0)
+        local fnDeclStr = vim.treesitter.get_node_text(decl, bufnr)
+        local rTypeStr = vim.treesitter.get_node_text(retTypeNode, bufnr)
+        return string.format("%s %s;", rTypeStr, fnDeclStr)
+    end
+end
+
+local function add_function_to(fileName)
+    local fnName = get_fn_name_under_cursor()
+    if not fnName then return end
+
+    local fileToExtend = fs.find_file_uptree(fileName)
+    if fileToExtend then
+        fs.file_append(fileToExtend, fnName)
+    else
+        print("WARN: No file '" .. fileName .. "' found.")
+    end
+end
+
+local function add_fn_to_parent_dir_header()
+    local fnName = get_fn_name_under_cursor()
+    if not fnName then return end
+
+    local curFileParent = fs.parent_dir_name()
+    local fileName = curFileParent .. ".h"
+    local fileToExtend = fs.find_file_uptree(fileName)
+
+    if fileToExtend then
+        fs.file_append(fileToExtend, fnName)
+    else
+        print("WARN: No file '" .. fileName .. "' found.")
+    end
+end
+
 local function add_current_as_template_to(fileName, templateText)
     local fileToExtend = fs.find_file_uptree(fileName)
     if fileToExtend then
@@ -42,6 +110,9 @@ local function add_current_as_template_to(fileName, templateText)
     end
 end
 
+
 return {
-    add_import = add_current_as_template_to
+    add_import = add_current_as_template_to,
+    add_fn_to = add_function_to,
+    add_header_fn = add_fn_to_parent_dir_header
 }

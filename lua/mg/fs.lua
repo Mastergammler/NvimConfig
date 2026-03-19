@@ -62,8 +62,20 @@ local function remove_common_prefix(filePath, other)
     return filePath:sub(i)
 end
 
+local function get_parent_dir_name()
+    local filePath = vim.fn.expand("%:p")
+    local dir = get_parent_dir(filePath)
+    local dirParent = get_parent_dir(dir)
+
+    local dirName = remove_common_prefix(dir, dirParent)
+    return dirName
+end
+
+
+
 return {
     find_file_uptree = find_file_uptree,
     file_append = file_append,
-    relative_path = remove_common_prefix
+    relative_path = remove_common_prefix,
+    parent_dir_name = get_parent_dir_name
 }

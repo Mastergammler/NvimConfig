@@ -12,3 +12,17 @@
 #include "/home/mg/.config/nvim/lua/mg/c/modularizer.lua"
 #include "/home/mg/.config/nvim/lua/mg/c/modularizer.lua"
 #include "c/modularizer.lua"
+void my_function_with_params(const char *str, int c, const char *str2,
+                             const char *more);
+void my_function_name();
+void my_new_cool_function(
+
+    MyStruct a, const AnotherStruct &b, another one);
+void my_function_with_params(const char *str, int c, const char *str2,
+                             const char *more);
+void my_function_name();
+void my_function_with_params(const char *str, int c, const char *str2,
+                             const char *more);
+void my_new_cool_function(
+
+    MyStruct a, const AnotherStruct &b, another one);
