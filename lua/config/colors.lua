@@ -1,5 +1,15 @@
 -- use ':hi' or ':Telescope highlights' to see the defined colors
---
+-- use :Inspect to see the color groups etc used
+
+vim.keymap.set("n", "<leader>is", function() vim.cmd("Inspect") end, { desc = "Inspecting color token types" })
+
+-- COMPILE MODE
+vim.api.nvim_set_hl(0, "CompileModeMessage", { link = "Comment" })
+vim.api.nvim_set_hl(0, "CompileModeInfo", { link = "@lsp.type.property" })
+vim.api.nvim_set_hl(0, "CompileModeWarning", { link = "TodoFgWARN" })
+vim.api.nvim_set_hl(0, "CompileModeError", { link = "TodoFgFIX" })
+vim.api.nvim_set_hl(0, "CompileModeMessageRow", { link = "CompileModeMessage" })
+vim.api.nvim_set_hl(0, "CompileModeMessageCol", { link = "CompileModeMessage" })
 
 --vim.api.nvim_set_hl(0, "Normal", { bg = "none", ctermbg = "none" })
 vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none", ctermbg = "none" })
