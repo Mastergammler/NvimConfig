@@ -78,7 +78,7 @@ vim.keymap.set("n", "<leader>i", function()
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end)
 
-vim.keymap.set("n", "<leader>cc",
+vim.keymap.set("n", "<leader>rl",
     function()
         --vim.cmd('source' .. vim.fn.stdpath('config') .. '/init.lua')
         --vim.notify('Config reload', vim.log.levels.INFO)
