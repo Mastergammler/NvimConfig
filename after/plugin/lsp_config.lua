@@ -70,7 +70,16 @@ cmp.setup({
         completeopt = 'menu,menuone,noinsert'
     },
     sources = cmp.config.sources({
-        { name = 'nvim_lsp' },
+        {
+            name = 'nvim_lsp',
+            entry_filter = function(entry, ctx)
+                -- cpp: constructors are always displayed first and are annoying
+                -- i almost never need them, so ignore them completely
+                return cmp.lsp.CompletionItemKind[entry:get_kind()] ~= 'Constructor'
+            end
+
+
+        },
     }, {
         { name = 'buffer' }
     })
