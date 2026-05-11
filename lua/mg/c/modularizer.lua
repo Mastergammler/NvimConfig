@@ -91,22 +91,38 @@ local function add_fn_to_parent_dir_header()
     local curFileParent = fs.parent_dir_name()
     local fileName = curFileParent .. ".h"
     local fileToExtend = fs.find_file_uptree(fileName)
-
     if fileToExtend then
         fs.file_append(fileToExtend, fnName)
     else
-        print("WARN: No file '" .. fileName .. "' found.")
+        local moduleHeader = "module.h";
+        local moduleHeaderFile = fs.find_file_uptree(moduleHeader)
+        if moduleHeaderFile then
+            fs.file_append(moduleHeaderFile, fnName)
+        else
+            print("WARN: No file '" .. fileName " or " .. moduleHeaderFile .. "' found.")
+        end
     end
 end
 
 local function add_current_as_template_to(fileName, templateText)
     local fileToExtend = fs.find_file_uptree(fileName)
+
+
     if fileToExtend then
         local currentFile = vim.fn.expand("%:p")
         local curRelativePath = fs.relative_path(currentFile, fileToExtend)
         fs.file_append(fileToExtend, string.format(templateText, curRelativePath))
-    else
-        print("WARN: No file '" .. fileName .. "' found.")
+    elseif string.match(fileName, "%.cpp$") then
+        local cImportFile = string.gsub(fileName, "%.cpp$", ".c")
+        local cFileToExtend = fs.find_file_uptree(cImportFile);
+
+        if cFileToExtend then
+            local currentFile = vim.fn.expand("%:p")
+            local curRelativePath = fs.relative_path(currentFile, cFileToExtend)
+            fs.file_append(fileToExtend, string.format(templateText, curRelativePath))
+        else
+            print("WARN: No file '" .. fileName .. "' found.")
+        end
     end
 end
 

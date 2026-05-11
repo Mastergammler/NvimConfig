@@ -9,6 +9,7 @@ local ProjectType = {
     -- TODO: cleanup, this is quite a akward solution
     -- There has to be a better way of handling this ...
     Cargo = "Cargo.toml",
+    Make = "Makefile",
     SCRIPT = "notafile.nope"
 }
 
@@ -24,6 +25,13 @@ local CargoCommands = {
     build = "cargo build",
     run = "cargo run",
     test = "cargo test"
+}
+
+local MakeCommands = {
+    build = "make build",
+    run = "make run",
+    test = "make test",
+    debug = "make debug"
 }
 
 -- TODO: i want the following
@@ -71,6 +79,8 @@ function createProjectCommand(commandName, cmdappend)
             if type == k and v == ProjectType.CS then
                 local pathQuoted = string.format(' "%s"', projectFile)
                 return DotnetCommands[commandName] .. pathQuoted .. ' ' .. cmdappend
+            elseif type == k and v == ProjectType.Make then
+                return MakeCommands[commandName] .. ' ' .. cmdappend
             elseif type == k and v == ProjectType.Cargo then
                 return CargoCommands[commandName] .. ' ' .. cmdappend
             elseif type == k and v == ProjectType.Gradle then

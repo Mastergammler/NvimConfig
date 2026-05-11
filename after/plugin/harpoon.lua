@@ -31,6 +31,7 @@ function cmd(cmdNo, commandName, cmdappend)
     print("Executing", commandName, "command ...")
 end
 
+-- TODO: do acutally build for makefile as well
 vim.keymap.set("n", "<C-B>", function() cmd(1, "build") end, { desc = "Build project" })
 vim.keymap.set("n", "<leader>bh", function() cmd(1, "build", "-h") end, { desc = "Build project with headers" })
 vim.keymap.set("n", "<C-R>", function() cmd(1, "run") end, { desc = "Run project" })

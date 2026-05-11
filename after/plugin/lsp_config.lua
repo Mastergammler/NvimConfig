@@ -168,6 +168,7 @@ vim.lsp.config("clangd", {
         "clangd",
         "--background-index",
         "--limit-references=0",
+        "--header-insertion=never"
     },
     capabilities = capabilities,
     on_attach = on_attach

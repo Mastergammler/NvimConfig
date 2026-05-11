@@ -1,11 +1,19 @@
 local refactor = require('mg.refactoring.refactoringutil')
 
-vim.keymap.set("n", "<leader>fs", function()
-    vim.lsp.buf.format()
-    vim.cmd.update()
-end, { silent = true, desc = 'File save (format file and save)' })
+
+
+local save =
+    function()
+        vim.lsp.buf.format()
+        vim.cmd.update()
+    end
+vim.keymap.set("n", "<leader>fs", save,
+    { silent = true, desc = 'File save (format file and save)' })
+vim.keymap.set("n", "<C-s>", save, { silent = true, desc = "Save file & format" })
+vim.keymap.set("n", "<M-s>", save, { silent = true, desc = "Save file & format" })
 
 vim.keymap.set("n", "Q", "<nop>", { desc = "We don't use Ex mode" })
+vim.keymap.set("n", "s", "<nop>", { desc = "Leave my chars alone, i just want to save" })
 vim.keymap.set("n", "<leader>", "<nop>", { desc = 'Single leader press does nothing' })
 
 ----------------
@@ -87,3 +95,18 @@ vim.keymap.set("n", "<leader>rl",
         vim.notify('Config reload', vim.log.levels.INFO)
     end,
     { desc = 'Reload nvim config' })
+
+
+vim.keymap.set("n", "<M-t>", function()
+    local current_line = vim.api.nvim_get_current_line()
+    local new_line = current_line:gsub(' %- ', ' ✔ ')
+    local row = vim.api.nvim_win_get_cursor(0)[1]
+    vim.api.nvim_buf_set_lines(0, row - 1, row, false, { new_line })
+end, { desc = "Todo: done - replaces the '-' with check" })
+
+-- TODO: this is one item
+-- ✔ this is my item
+-- ✔ this is done
+-- ✔ hello world
+-- - this needs to be done
+-- ✔ this is done
