@@ -2,7 +2,9 @@ vim.filetype.add({
     extension = {
         template = "html",
         props = "xml",
-        csproj = "xml"
+        csproj = "xml",
+        svg = "html",
+        tdata = "dosini"
     }
 })
 

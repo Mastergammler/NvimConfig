@@ -7,7 +7,11 @@
 -- DECISION: this is something i did
 -- this is how we do things now!
 
--- DONE: ✔ something ✔
+-- normal comment
+--  TASKLIST: [3/3]
+-- ✔ do this thing
+-- ✔ do this other thing
+-- ✔ do tihs third thing
 
 -- OPT: do something else
 require("todo-comments").setup({
@@ -15,12 +19,12 @@ require("todo-comments").setup({
         STFO = { icon = "", color = "stfo" },
         DECISION = { icon = "", color = "dec" },
         OPT = { icon = "", color = "opt" },
-        DONE = { icon = "✔", color = "done" }
+        TASKLIST = { icon = "✔", color = "tasks" }
     },
     colors = {
         stfo = { "@keyword", "#cccccc" },
         dec = { "#cc9966", "#c68c53" },
         opt = { "@label" },
-        done = { "#26734d" }
+        tasks = { "#75a3a3" }
     }
 });
