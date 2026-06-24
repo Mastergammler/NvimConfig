@@ -1,11 +1,6 @@
 local function convert_member_access(fromPointer)
     local bufnr = vim.api.nvim_get_current_buf()
-
     local lang = vim.treesitter.language.get_lang(vim.bo.filetype)
-    local parser = vim.treesitter.get_parser(bufnr, lang)
-    local tree = parser:parse()[1]
-    local root = tree:root()
-
     local findPat = "%."
     local replacePat = "->"
     local replaceLen = 1

@@ -1,5 +1,6 @@
 local tele = require('telescope')
 local builtin = require('telescope.builtin')
+local utils = require 'telescope.utils'
 local todocomments = require('todo-comments')
 
 tele.setup {
@@ -26,9 +27,36 @@ tele.setup {
 -- FILE SEARCH --
 -----------------
 
+local function jj_git_project_files()
+    -- jj root only succeeds in a jj dir
+    local jjRoot, ret = utils.get_os_command_output({ 'jj', 'root' })
+
+    if ret == 0 then
+        builtin.git_files({
+            prompt_title = 'JJ Files',
+            git_command = { 'jj', 'file', 'list', '--no-pager' },
+            cwd = jjRoot[1]
+        })
+        return
+    end
+
+    local _, gitRet = utils.get_os_command_output({ 'git', 'rev-parse', '--is-inside-work-tree' })
+
+    if gitRet == 0 then
+        builtin.git_files()
+        return
+    end
+
+    -- basic fallback, just default find files
+    builtin.find_files({ no_ignore = true })
+end
+
 vim.keymap.set('n', "<leader>ff", function() builtin.find_files({ no_ignore = true }) end,
     { desc = 'Find files (working dir)' })
-vim.keymap.set('n', "<leader><leader>", builtin.git_files, { desc = 'Find files (tracked by git)' })
+vim.keymap.set('n', "<leader><leader>",
+    jj_git_project_files,
+    { desc = 'Find files (tracked by jj/git)' })
+
 -- TODO: check if i have overwritten this - not sure if i use this at all
 vim.keymap.set('n', '<leader>rf', builtin.oldfiles, { desc = 'Find recent files' })
 
