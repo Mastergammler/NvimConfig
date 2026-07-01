@@ -87,9 +87,3 @@ dap.configuration.cs = {
 
 
 print("a-dap-ters loaded")
-
-vim.keymap.set("n", "<leader>gc", function()
-    vim.cmd("w")
-    vim.cmd("so")
-    --findProjectFilePath();
-end, { desc = "go command!!!! - runs a test function somewhere" });

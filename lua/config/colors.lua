@@ -76,3 +76,34 @@ vim.api.nvim_set_hl(0, "@lsp.type.macro",
 
 -- setting fold color to comment color for treesitter
 vim.cmd("hi! link Folded Comment")
+
+
+-- **************************************
+-- *********    MARKDOWN    *************
+-- **************************************
+
+local col_op = vim.api.nvim_get_hl(0, { name = "Operator", link = false })
+local col_comm = vim.api.nvim_get_hl(0, { name = "Comment", link = false })
+local col_kw = vim.api.nvim_get_hl(0, { name = "Keyword", link = false })
+
+--print(vim.inspect(col_kw))
+--print(string.format("#%06x", col_kw.fg))
+
+vim.api.nvim_set_hl(0, "@markup.heading.1.markdown", {
+    fg = col_op.fg,
+    bg = "#680000",
+    underline = true
+})
+vim.api.nvim_set_hl(0, "@markup.heading.2.markdown", { fg = col_op.fg, underline = true })
+vim.api.nvim_set_hl(0, "@markup.heading.3.markdown", { link = "@operator" })
+vim.api.nvim_set_hl(0, "@markup.heading.4.markdown", { link = "@operator" })
+vim.api.nvim_set_hl(0, "@markup.heading.5.markdown", { link = "@operator" })
+vim.api.nvim_set_hl(0, "@markup.heading.6.markdown", { link = "@operator" })
+
+vim.api.nvim_set_hl(0, "@markup.raw.markdown_inline", { bg = "#000000", fg = col_comm.fg })
+vim.api.nvim_set_hl(0, "@markup.link.label", { link = "@function.call" })
+vim.api.nvim_set_hl(0, "@markup.italic", { link = "NightflyTan" })
+vim.api.nvim_set_hl(0, "@markup.raw.block", { bg = "#000000" })
+vim.api.nvim_set_hl(0, "@markup.list.markdown", { fg = col_kw.fg, bg = "#2b0840" })
+vim.api.nvim_set_hl(0, "@markup.list.checked.markdown", { bg = darkGreen, fg = brighterGreen })
+vim.api.nvim_set_hl(0, "@markup.list.unchecked.markdown", { fg = brighterGreen })

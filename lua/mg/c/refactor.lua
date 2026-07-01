@@ -79,10 +79,10 @@ local function convert_member_access(fromPointer)
     end
 end
 
-vim.keymap.set("n", "<leader>gc", function()
+--[[vim.keymap.set("n", "<leader>gc", function()
     print("running go command ...")
     convert_member_access(true)
-end, { desc = "go command - running convert member access" });
+end, { desc = "go command - running convert member access" });]]
 
 return {
     replace_pointer_access = convert_member_access

@@ -1,5 +1,5 @@
 --  TEST:
---  TASKLIST: [8/9]
+--  TASKLIST: 133 Do something [8/9]
 -- ✔ this is my item
 -- ✔ this is done
 -- ✔ hello world
@@ -31,6 +31,7 @@ local function update_tasklist()
     local todoPat           = "^%s*" .. prefixPat .. "%s* %- "
     local donePat           = "^%s*" .. prefixPat .. "%s* ✔ "
     local commentPat        = "^%s*" .. prefixPat
+    local tasksSubPat       = "%s*%[%d+/%d+%]%s*$";
 
     local tasklistHeaderIdx = nil
 
@@ -65,7 +66,12 @@ local function update_tasklist()
         end
     end
 
-    local newHeader = { string.format(commentPrefix .. " TASKLIST: [%d/%d]", taskInfo.done, taskInfo.total) }
+
+    -- Remove existing [x/y] at the end (if any)
+    local headerPrefix = lines[tasklistHeaderIdx]:gsub(tasksSubPat, "");
+    local newHeader    = {
+        string.format("%s [%d/%d]", headerPrefix, taskInfo.done, taskInfo.total)
+    }
     vim.api.nvim_buf_set_lines(bufnr, tasklistHeaderIdx - 1, tasklistHeaderIdx, true, newHeader)
 end
 

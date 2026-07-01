@@ -80,6 +80,9 @@ cmp.setup({
 
 
         },
+        {
+            name = 'vault'
+        }
     }, {
         { name = 'buffer' }
     })
@@ -190,6 +193,11 @@ vim.lsp.config.eslint = {
 }
 
 vim.lsp.config.ts_ls = {
+    on_attach = on_attach,
+    capabilities = capabilities
+}
+
+vim.lsp.config.ast_grep = {
     on_attach = on_attach,
     capabilities = capabilities
 }

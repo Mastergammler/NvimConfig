@@ -113,8 +113,19 @@ vim.keymap.set('t', '`,', '<C-\\><C-n><C-w>w',
 
 vim.keymap.set("n", "<leader>xx", function()
     vim.cmd('w')
-    vim.cmd('so')
-end, { desc = 'Saves and runs the current file' })
+
+    local output = vim.fn.execute("silent source %")
+
+    vim.cmd("botright vnew")
+    local buf = vim.api.nvim_get_current_buf()
+
+    vim.bo[buf].buftype = "nofile"
+    vim.bo[buf].bufhidden = "wipe"
+    vim.bo[buf].swapfile = false
+
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(output, "\n"))
+    vim.bo[buf].modifiable = false
+end, { desc = 'Saves & runs current file -> puts output into special buffer' })
 
 -- TODO: reload module (for lua dev)
 -- TODO: plenary test file (do i need it?)

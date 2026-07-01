@@ -4,7 +4,9 @@ vim.filetype.add({
         props = "xml",
         csproj = "xml",
         svg = "html",
-        tdata = "dosini"
+        tdata = "dosini",
+        lvl = "dosini",
+        conf = "dosini",
     }
 })
 
