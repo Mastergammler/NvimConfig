@@ -7,6 +7,7 @@ vim.filetype.add({
         tdata = "dosini",
         lvl = "dosini",
         conf = "dosini",
+        vault = "dosini"
     }
 })
 

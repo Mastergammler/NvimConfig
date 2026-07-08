@@ -7,7 +7,11 @@ local function read_vault_config(path)
         vault_root = ".",
         -- expecting bin path exec by default
         simpkm_exec = "pkmp",
-        template_dir = "templates"
+        template_dir = "templates",
+        daily_dir = "daily",
+        daily_template = "",
+        ticket_dir = "tickets",
+        ticket_template = ""
     }
 
     local file, err = io.open(path, "r")
@@ -38,7 +42,10 @@ local path = ".vault"
 local cfg, err = read_vault_config(path)
 
 if not cfg.found then
-    print(err)
+    -- this opens a prompt in every project, which is annoying
+    -- so i'll just omit this, and mke it a check command or something
+    -- => like check_vault_info()
+    --vim.notify(err, vim.log.levels.INFO)
 end
 
 config = cfg

@@ -32,7 +32,7 @@ do i want to keep this?
 when there is no text etc, this is pretty broken ...
 ```
 
-**bold blocks** are ok
+**bold blocks** are ok now!
 
 ***triple block don't work correctly?***
 
@@ -50,6 +50,7 @@ when there is no text etc, this is pretty broken ...
 - hello world there
     - this is my indentation
     - - - this works
+
 ### lists etc
 - this is just a list
 - which different bullet points

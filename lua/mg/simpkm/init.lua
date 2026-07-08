@@ -10,11 +10,16 @@ require "mg.simpkm.complete"
 local jump = require "mg.simpkm.jump"
 local fun = require "mg.simpkm.functions"
 local template = require "mg.simpkm.template"
+local tman = require "mg.simpkm.tman"
 
 vim.keymap.set({ "n", "i" }, "<M-CR>", fun.cycle_bullet_todo, { desc = "[Markdown] Cycle bullet / todos" })
 vim.keymap.set({ "n", "i" }, "<C-CR>", fun.cycle_bullet_todo, { desc = "[Markdown] Cycle bullet / todos" })
 vim.keymap.set({ "n", "i" }, "<C-Space>", template.insert_template,
     { desc = "[Markdown] Teselcope open .vault template dir for insert" })
+-- NOTE: Do NOT set space leader actions to insert mode, eles you produce lag!
+-- (because nvim needs to wait for input shortcut combos)
+vim.keymap.set({ "n" }, "<Space>nt", tman.new_ticket,
+    { desc = "[Markdown] Create new ticket & parse default template" })
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "markdown",
