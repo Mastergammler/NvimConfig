@@ -1,9 +1,10 @@
 local timer = require "mg.performance.timing"
+local cfg = require "mg.simpkm.config"
 
 local opt = {
     ext = ".md",
-    base_path = vim.fn.getcwd(),
-    exec_path = vim.env.HOME .. "/02-areas/simpkm/parser/.build/pkmp"
+    base_path = vim.fn.getcwd() .. "/" .. cfg.config.vault_root,
+    exec_path = cfg.config.simpkm_exec
 }
 
 -- TODO: for testing only

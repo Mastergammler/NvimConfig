@@ -10,7 +10,8 @@ require "mg.simpkm.complete"
 local jump = require "mg.simpkm.jump"
 local fun = require "mg.simpkm.functions"
 
-vim.keymap.set({ "n", "i" }, { "<C-CR>", "<M-CR>" }, fun.cycle_bullet_todo, { desc = "[Markdown] Cycle bullet / todos" })
+vim.keymap.set({ "n", "i" }, "<M-CR>", fun.cycle_bullet_todo, { desc = "[Markdown] Cycle bullet / todos" })
+vim.keymap.set({ "n", "i" }, "<C-CR>", fun.cycle_bullet_todo, { desc = "[Markdown] Cycle bullet / todos" })
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "markdown",
