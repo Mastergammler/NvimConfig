@@ -9,9 +9,12 @@ require "mg.simpkm.complete"
 
 local jump = require "mg.simpkm.jump"
 local fun = require "mg.simpkm.functions"
+local template = require "mg.simpkm.template"
 
 vim.keymap.set({ "n", "i" }, "<M-CR>", fun.cycle_bullet_todo, { desc = "[Markdown] Cycle bullet / todos" })
 vim.keymap.set({ "n", "i" }, "<C-CR>", fun.cycle_bullet_todo, { desc = "[Markdown] Cycle bullet / todos" })
+vim.keymap.set({ "n", "i" }, "<C-Space>", template.insert_template,
+    { desc = "[Markdown] Teselcope open .vault template dir for insert" })
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "markdown",
