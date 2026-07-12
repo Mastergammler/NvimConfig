@@ -1,5 +1,6 @@
 local timer = require "mg.performance.timing"
 
+
 local function read_vault_config(path)
     local config = {
         found = false,
@@ -38,6 +39,11 @@ local function read_vault_config(path)
 end
 
 local config;
+
+local function path_from_relative(relPath)
+    return vim.fn.getcwd() .. "/" .. config.vault_root .. "/" .. relPath;
+end
+
 local path = ".vault"
 local cfg, err = read_vault_config(path)
 
@@ -52,5 +58,6 @@ config = cfg
 
 return {
     load_config = read_vault_config,
+    from_relative = path_from_relative,
     config = config
 }

@@ -4,6 +4,7 @@
 --
 local cfg = require "mg.simpkm.config"
 local template = require "mg.simpkm.template"
+local fs = require "mg.fs"
 
 local opt = {
     ext = ".md",
@@ -11,12 +12,6 @@ local opt = {
     ticket_template_file = cfg.config.vault_root ..
         "/" .. cfg.config.template_dir .. "/" .. cfg.config.ticket_template .. ".md",
 }
-
-local function ensure_dir(path)
-    if vim.fn.isdirectory(path) == 0 then
-        vim.fn.mkdir(opt.ticket_dir, "p")
-    end
-end
 
 local function next_ticket_number()
     local res = { ok = false, number = 1 }
@@ -50,14 +45,14 @@ local function new_ticket()
 
         local filename = string.format("⮜ %03d ⮞  %s" .. opt.ext, numRes.number, title)
         local path = opt.ticket_dir .. "/" .. filename
-        local lines = template.render_template(opt.ticket_template_file, { title = title })
+        local lines = template.render_template(opt.ticket_template_file, { title = title, no = numRes.number })
 
         vim.fn.writefile(lines, path)
         vim.cmd.edit(vim.fn.fnameescape(path))
     end)
 end
 
-ensure_dir(opt.ticket_dir)
+fs.ensure_dir(opt.ticket_dir)
 
 return {
     new_ticket = new_ticket

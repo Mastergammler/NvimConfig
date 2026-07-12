@@ -71,11 +71,21 @@ local function get_parent_dir_name()
     return dirName
 end
 
+local function ensure_dir_exists(path)
+    if vim.fn.isdirectory(path) == 0 then
+        vim.fn.mkdir(path, "p")
+    end
+end
 
+local function file_exists(path)
+    return vim.uv.fs_stat(path)
+end
 
 return {
     find_file_uptree = find_file_uptree,
     file_append = file_append,
     relative_path = remove_common_prefix,
-    parent_dir_name = get_parent_dir_name
+    parent_dir_name = get_parent_dir_name,
+    ensure_dir = ensure_dir_exists,
+    file_exists = file_exists
 }

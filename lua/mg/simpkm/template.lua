@@ -11,15 +11,20 @@ local date = require "mg.simpkm.date"
 -- ✔ insert template (read file) on enter
 -- ✔ parse template text
 
--- splitting context dependent and general functions
+-- sitting context dependent and general functions
 -- everything that is not specific comes from the context
 -- all others are generally callable functions
 local SUB_FNS = {
     title = function(ctx) return ctx.title end,
+    ticket_no = function(ctx) return ctx.no end,
     today = function(_) return date.today() end,
     now = function(_) return date.now() end,
     yesterday = function(_) return date.yesterday() end,
     tomorrow = function(_) return date.tomorrow() end,
+    prev_date = function(ctx) return date.by_offset(ctx.date_iso, -1) end,
+    next_date = function(ctx) return date.by_offset(ctx.date_iso, 1) end,
+    cw = function(ctx) return date.cw(ctx.date_iso) end,
+    year_short = function(ctx) return date.year_short(ctx.date_iso) end
 };
 
 local function substitute_template(templatePath, ctx)
@@ -40,11 +45,13 @@ local function substitute_template(templatePath, ctx)
     return templateLines
 end
 
--- @entry - telescope selet entry
+-- @entry - telescope select entry
 local function parse_insert(templateDir, entry)
     local path = entry.path or (templateDir .. "/" .. entry.value)
 
-    local lines = substitute_template(path, { title = vim.fn.fnamemodify(entry.value, ":t:r") })
+    local ctx = {}
+    ctx.title = vim.fn.fnamemodify(entry.value, ":t:r")
+    local lines = substitute_template(path, ctx)
 
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
     vim.api.nvim_buf_set_text(0, row - 1, col, row - 1, col, lines)

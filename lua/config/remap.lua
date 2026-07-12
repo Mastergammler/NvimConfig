@@ -150,5 +150,5 @@ vim.keymap.set("n", "<space>pt", function() cref.replace_pointer_access(false) e
 vim.keymap.set("n", "<space>fp", function() cref.replace_pointer_access(true) end,
     { desc = "from pointer: Replace -> with . for word under cursor" })
 
-vim.keymap.set("n", "<M-d>", tlist.mark_done_under_cursor, { desc = "Todos: done - replaces the '-' with check" })
-vim.keymap.set("n", "<M-t>", tlist.update_tasklist, { desc = "Todos: Updates the tasklist counter" })
+vim.keymap.set("n", "<M-t>", tlist.mark_done_under_cursor, { desc = "Todos: done - replaces the '-' with check" })
+vim.keymap.set("n", "<M-u>", tlist.update_tasklist, { desc = "Todos: Updates the tasklist counter" })

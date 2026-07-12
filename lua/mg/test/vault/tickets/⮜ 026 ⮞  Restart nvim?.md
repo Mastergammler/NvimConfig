@@ -1,7 +1,7 @@
 ---
-created: <% now %>
+created: 2026-07-12T22:43
 finished: 
-aliases: [Ticket-<% ticket_no %>]
+aliases: [Ticket-26]
 ---
 #state/open
 
