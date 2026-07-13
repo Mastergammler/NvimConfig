@@ -1,6 +1,7 @@
 local refactor = require 'mg.refactoring.refactoringutil'
 local tlist = require 'mg.tman.tasklist'
 local cref = require 'mg.c.refactor'
+local utils = require 'mg.utils'
 
 local save =
     function()
@@ -113,6 +114,13 @@ vim.keymap.set('t', '`,', '<C-\\><C-n><C-w>w',
 
 vim.keymap.set("n", "<leader>xx", function()
     vim.cmd('w')
+
+    utils.reload_module('mg.simpkm.complete')
+    utils.reload_module('mg.simpkm.template')
+    utils.reload_module('mg.simpkm.tman')
+    utils.reload_module('mg.simpkm.daily')
+    utils.reload_module('mg.simpkm.jump')
+    utils.reload_module('mg.simpkm')
 
     local output = vim.fn.execute("silent source %")
 

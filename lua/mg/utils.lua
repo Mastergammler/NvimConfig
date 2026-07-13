@@ -3,7 +3,6 @@ local function reload(moduleName)
     return require(moduleName)
 end
 
-
 return {
     reload_module = reload
 }

@@ -8,7 +8,6 @@
 Here we have a [[link|specfic link]] inside a text
 Here is a [[link]] and another [[link2]] within one text
 
-
 # main heading
 
 ## secondary heading
