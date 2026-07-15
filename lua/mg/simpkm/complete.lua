@@ -129,6 +129,10 @@ function source.new()
 end
 
 local function create_index()
+    -- we only enable this on project that have a vault defined
+    -- else it crashes the startup
+    if not cfg.config.found then return end
+
     -- TODO: check success?
     local result = vim.system({ opt.exec_path, "index", cfg.config.vault_root }):wait()
 

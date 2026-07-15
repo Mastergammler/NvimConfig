@@ -53,6 +53,38 @@ local function file_append(filePath, text)
     end
 end
 
+local function file_append_refresh(filePath, appendixText)
+    local bufnr
+
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.api.nvim_buf_is_loaded(buf) then
+            local name = vim.api.nvim_buf_get_name(buf)
+            if vim.fn.fnamemodify(name, ":p") == vim.fn.fnamemodify(filePath, ":p") then
+                bufnr = buf
+                break
+            end
+        end
+    end
+
+    if bufnr and vim.bo[bufnr].modified then
+        vim.api.nvim_buf_call(bufnr, function()
+            vim.cmd("silent write")
+        end)
+    end
+
+    file_append(filePath, appendixText)
+
+    if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
+        local view = vim.fn.winsaveview()
+        vim.api.nvim_buf_call(bufnr, function()
+            vim.cmd("checktime")
+            vim.cmd("edit!")
+        end)
+
+        vim.fn.winrestview(view)
+    end
+end
+
 local function remove_common_prefix(filePath, other)
     local i = 1
     while filePath:sub(i, i) == other:sub(i, i) do
@@ -84,6 +116,7 @@ end
 return {
     find_file_uptree = find_file_uptree,
     file_append = file_append,
+    file_append_refresh = file_append_refresh,
     relative_path = remove_common_prefix,
     parent_dir_name = get_parent_dir_name,
     ensure_dir = ensure_dir_exists,

@@ -1,1 +1,4 @@
-void myfunction() {}
+void myfunction() {
+
+  // something
+}

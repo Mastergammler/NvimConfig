@@ -78,7 +78,7 @@ local function add_function_to(fileName)
 
     local fileToExtend = fs.find_file_uptree(fileName)
     if fileToExtend then
-        fs.file_append(fileToExtend, fnName)
+        fs.file_append_refresh(fileToExtend, fnName)
     else
         print("WARN: No file '" .. fileName .. "' found.")
     end
@@ -92,12 +92,12 @@ local function add_fn_to_parent_dir_header()
     local fileName = curFileParent .. ".h"
     local fileToExtend = fs.find_file_uptree(fileName)
     if fileToExtend then
-        fs.file_append(fileToExtend, fnName)
+        fs.file_append_refresh(fileToExtend, fnName)
     else
         local moduleHeader = "module.h";
         local moduleHeaderFile = fs.find_file_uptree(moduleHeader)
         if moduleHeaderFile then
-            fs.file_append(moduleHeaderFile, fnName)
+            fs.file_append_refresh(moduleHeaderFile, fnName)
         else
             print("WARN: No file '" .. fileName " or " .. moduleHeaderFile .. "' found.")
         end
@@ -111,7 +111,7 @@ local function add_current_as_template_to(fileName, templateText)
     if fileToExtend then
         local currentFile = vim.fn.expand("%:p")
         local curRelativePath = fs.relative_path(currentFile, fileToExtend)
-        fs.file_append(fileToExtend, string.format(templateText, curRelativePath))
+        fs.file_append_refresh(fileToExtend, string.format(templateText, curRelativePath))
     elseif string.match(fileName, "%.cpp$") then
         local cImportFile = string.gsub(fileName, "%.cpp$", ".c")
         local cFileToExtend = fs.find_file_uptree(cImportFile);
@@ -119,7 +119,7 @@ local function add_current_as_template_to(fileName, templateText)
         if cFileToExtend then
             local currentFile = vim.fn.expand("%:p")
             local curRelativePath = fs.relative_path(currentFile, cFileToExtend)
-            fs.file_append(fileToExtend, string.format(templateText, curRelativePath))
+            fs.file_append_refresh(fileToExtend, string.format(templateText, curRelativePath))
         else
             print("WARN: No file '" .. fileName .. "' found.")
         end

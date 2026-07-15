@@ -2,6 +2,7 @@ local refactor = require 'mg.refactoring.refactoringutil'
 local tlist = require 'mg.tman.tasklist'
 local cref = require 'mg.c.refactor'
 local utils = require 'mg.utils'
+local history = require 'mg.editor.history'
 
 local save =
     function()
@@ -27,8 +28,12 @@ vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directior (via oi
 
 -- TODO: this doesn't work as intended, because the buffer order is not consistent
 -- with the usage
-vim.keymap.set("n", "<C-h>", vim.cmd.bprevious, { desc = 'Goto previous buffer' })
-vim.keymap.set("n", "<C-l>", vim.cmd.bnext, { desc = 'Goto next buffer' })
+vim.keymap.set("n", "<C-h>", history.prev_buf, { desc = '[history] Goto previous buffer on the stack' })
+vim.keymap.set("n", "<C-l>", history.next_buf, { desc = '[history] Goto next buffer on the stack' })
+vim.keymap.set("n", "<leader>ch", history.clear, { desc = '[history] clear (for current window)' })
+vim.keymap.set("n", "<leader>w/", history.vs, { noremap = true, desc = 'Split window right (history aware)' })
+vim.keymap.set("n", "<leader>w-", history.split, { noremap = true, desc = 'Split window below (history aware)' })
+
 
 vim.keymap.set("n", "<leader>wd", vim.cmd.close, { noremap = true, desc = 'Window delete - close the window' })
 vim.keymap.set("n", "<leader>ww", "<C-w>w", { noremap = true, desc = 'Window window - goto next window' })
@@ -36,8 +41,6 @@ vim.keymap.set("n", "<leader>wj", "<C-w>j", { noremap = true, desc = 'window j -
 vim.keymap.set("n", "<leader>wk", "<C-w>k", { noremap = true, desc = 'Window k - window above' })
 vim.keymap.set("n", "<leader>wl", "<C-w>l", { noremap = true, desc = 'Window l - window right' })
 vim.keymap.set("n", "<leader>wh", "<C-w>h", { noremap = true, desc = 'Window h - window left' })
-vim.keymap.set("n", "<leader>w/", vim.cmd.vs, { noremap = true, desc = 'Split window right' })
-vim.keymap.set("n", "<leader>w-", vim.cmd.split, { noremap = true, desc = 'Split window below' })
 
 vim.keymap.set({ 'n' }, "<C-k>", "<cmd>cnext<CR>", { desc = 'Quickfix next' })
 vim.keymap.set({ 'n' }, "<C-j>", "<cmd>cprev<CR>", { desc = 'Quickfix previous' })
@@ -121,6 +124,7 @@ vim.keymap.set("n", "<leader>xx", function()
     utils.reload_module('mg.simpkm.daily')
     utils.reload_module('mg.simpkm.jump')
     utils.reload_module('mg.simpkm')
+    utils.reload_module('mg.editor.history')
 
     local output = vim.fn.execute("silent source %")
 
