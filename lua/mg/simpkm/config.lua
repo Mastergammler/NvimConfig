@@ -1,6 +1,5 @@
 local timer = require "mg.performance.timing"
 
-
 local function read_vault_config(path)
     local config = {
         found = false,
@@ -12,7 +11,9 @@ local function read_vault_config(path)
         daily_dir = "daily",
         daily_template = "",
         ticket_dir = "tickets",
-        ticket_template = ""
+        ticket_template = "",
+        links_file = ".index_links",
+        img_dir = "img"
     }
 
     local file, err = io.open(path, "r")

@@ -27,7 +27,7 @@ vim.opt.isfname:append("@-@")
 
 -- trigger for CursorHold events, currently not using it much
 vim.opt.updatetime = 1000
-vim.opt.colorcolumn = "120"
+vim.opt.colorcolumn = "81"
 vim.opt.cursorline = true
 
 -- without setting hegiht to 2 the 'type ENTER ..` prompt will always appear

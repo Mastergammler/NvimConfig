@@ -1,7 +1,11 @@
 -- use ':hi' or ':Telescope highlights' to see the defined colors
 -- use :Inspect to see the color groups etc used
 
-vim.keymap.set("n", "<leader>is", function() vim.cmd("Inspect") end, { desc = "Inspecting color token types" })
+vim.keymap.set("n", "<leader>is", function() vim.cmd("Inspect") end,
+    { desc = "Inspecting color token types" })
+
+vim.api.nvim_set_hl(0, "ColorColumn", { bg = "#00334d" })
+
 
 -- COMPILE MODE
 vim.api.nvim_set_hl(0, "CompileModeMessage", { link = "Comment" })
@@ -30,7 +34,10 @@ vim.api.nvim_set_hl(0, "@variable", { fg = "#cccccc" })
 vim.api.nvim_set_hl(0, "@string", { fg = "#afd676", italic = false })
 vim.api.nvim_set_hl(0, "@storageclass", { link = "@type.qualifier" })
 vim.api.nvim_set_hl(0, "@constant.builtin", { link = "@type.qualifier" })
-vim.api.nvim_set_hl(0, "@variable.builtin", { link = "@type.qualifier", bold = true })
+vim.api.nvim_set_hl(0, "@variable.builtin", {
+    link = "@type.qualifier",
+    bold = true
+})
 vim.api.nvim_set_hl(0, "@type.builtin", { link = "@type.qualifier" })
 vim.api.nvim_set_hl(0, "@constructor", { link = "@conditional" })
 vim.api.nvim_set_hl(0, "@include", { link = "@type.qualifier" })
@@ -72,7 +79,12 @@ evenBrighterGreen = "#28c1a8"
 vim.api.nvim_set_hl(0, "@lsp.type.type.cpp", { link = "@lsp.type.builtinType" })
 -- FIXME: seems like undercurl is not working
 vim.api.nvim_set_hl(0, "@lsp.type.macro",
-    { fg = evenBrighterGreen, bg = evenDarkerGreen, undercurl = false, bold = true })
+    {
+        fg = evenBrighterGreen,
+        bg = evenDarkerGreen,
+        undercurl = false,
+        bold = true
+    })
 
 -- setting fold color to comment color for treesitter
 vim.cmd("hi! link Folded Comment")
@@ -85,7 +97,10 @@ vim.cmd("hi! link Folded Comment")
 local col_op = vim.api.nvim_get_hl(0, { name = "Operator", link = false })
 local col_comm = vim.api.nvim_get_hl(0, { name = "Comment", link = false })
 local col_kw = vim.api.nvim_get_hl(0, { name = "Keyword", link = false })
-local col_red = vim.api.nvim_get_hl(0, { name = "@markup.strong", link = false })
+local col_red = vim.api.nvim_get_hl(0, {
+    name = "@markup.strong",
+    link = false
+})
 local col_yell = vim.api.nvim_get_hl(0, { name = "NightflyTan", link = false })
 
 --print(vim.inspect(col_kw))
@@ -96,17 +111,22 @@ vim.api.nvim_set_hl(0, "@markup.heading.1.markdown", {
     bg = "#680000",
     underline = true
 })
-vim.api.nvim_set_hl(0, "@markup.heading.2.markdown", { fg = col_op.fg, underline = true })
+vim.api.nvim_set_hl(0, "@markup.heading.2.markdown",
+    { fg = col_op.fg, underline = true })
 vim.api.nvim_set_hl(0, "@markup.heading.3.markdown", { link = "@operator" })
 vim.api.nvim_set_hl(0, "@markup.heading.4.markdown", { link = "@operator" })
 vim.api.nvim_set_hl(0, "@markup.heading.5.markdown", { link = "@operator" })
 vim.api.nvim_set_hl(0, "@markup.heading.6.markdown", { link = "@operator" })
-
-vim.api.nvim_set_hl(0, "@markup.raw.markdown_inline", { bg = "#000000", fg = col_comm.fg })
-vim.api.nvim_set_hl(0, "@markup.strong.markdown_inline", { fg = col_red.fg, bold = true })
+vim.api.nvim_set_hl(0, "@markup.raw.markdown_inline",
+    { bg = "#000000", fg = col_comm.fg })
+vim.api.nvim_set_hl(0, "@markup.strong.markdown_inline",
+    { fg = col_red.fg, bold = true })
 vim.api.nvim_set_hl(0, "@markup.link.label", { link = "@function.call" })
 vim.api.nvim_set_hl(0, "@markup.italic", { fg = col_yell.fg, italic = true })
 vim.api.nvim_set_hl(0, "@markup.raw.block", { bg = "#000000" })
-vim.api.nvim_set_hl(0, "@markup.list.markdown", { fg = col_kw.fg, bg = "#2b0840" })
-vim.api.nvim_set_hl(0, "@markup.list.checked.markdown", { bg = darkGreen, fg = brighterGreen })
-vim.api.nvim_set_hl(0, "@markup.list.unchecked.markdown", { fg = brighterGreen })
+vim.api.nvim_set_hl(0, "@markup.list.markdown",
+    { fg = col_kw.fg, bg = "#2b0840" })
+vim.api.nvim_set_hl(0, "@markup.list.checked.markdown",
+    { bg = darkGreen, fg = brighterGreen })
+vim.api.nvim_set_hl(0, "@markup.list.unchecked.markdown",
+    { fg = brighterGreen })

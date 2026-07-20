@@ -32,11 +32,15 @@ local function jj_git_project_files()
     local jjRoot, ret = utils.get_os_command_output({ 'jj', 'root' })
 
     if ret == 0 then
-        builtin.git_files({
+        -- jj find files is just super slow, takes about 30-40x the times git
+        -- uses, and the jitter is noticable when searching files ,
+        -- so we use the default find files instead, which is sufficient
+        builtin.find_files({ no_ignore = false })
+        --[[builtin.git_files({
             prompt_title = 'JJ Files',
             git_command = { 'jj', 'file', 'list', '--no-pager' },
             cwd = jjRoot[1]
-        })
+        })]] --
         return
     end
 
@@ -51,6 +55,8 @@ local function jj_git_project_files()
     builtin.find_files({ no_ignore = true })
 end
 
+-- NOTE: no ignore, still ignores some kind of dot files etc, it's a bit wired
+-- -> Not 100% sure why this happens actually
 vim.keymap.set('n', "<leader>ff", function() builtin.find_files({ no_ignore = true }) end,
     { desc = 'Find files (working dir)' })
 vim.keymap.set('n', "<leader><leader>",

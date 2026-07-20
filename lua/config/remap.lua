@@ -118,11 +118,13 @@ vim.keymap.set('t', '`,', '<C-\\><C-n><C-w>w',
 vim.keymap.set("n", "<leader>xx", function()
     vim.cmd('w')
 
+    utils.reload_module('mg.performance.timing')
     utils.reload_module('mg.simpkm.complete')
     utils.reload_module('mg.simpkm.template')
     utils.reload_module('mg.simpkm.tman')
     utils.reload_module('mg.simpkm.daily')
     utils.reload_module('mg.simpkm.jump')
+    utils.reload_module('mg.simpkm.image')
     utils.reload_module('mg.simpkm')
     utils.reload_module('mg.editor.history')
 

@@ -5,10 +5,17 @@
 
 [[Lua Guide|neovim scripting]] 
 
+[[Image link tests]]
+[[Image link tests|ilt]]
+[[Image link tests|imalink tst]]
+
 Here we have a [[link|specfic link]] inside a text
 Here is a [[link]] and another [[link2]] within one text
 
 # main heading
+
+[[Image link tests|ilt]]
+[[Image link tests|imalink tst]]
 
 ## secondary heading
 
@@ -55,4 +62,10 @@ when there is no text etc, this is pretty broken ...
 - which different bullet points
     - also with nested lists
     - and so on, very basic
+
+this is the end, you know
+
+
+
+
 

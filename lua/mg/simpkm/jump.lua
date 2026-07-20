@@ -11,14 +11,20 @@ local function get_link_under_cursor()
     local cursor = vim.api.nvim_win_get_cursor(0)
     local curCursor = { line = cursor[1], col = cursor[2] }
 
-    local result = vim.system({ opt.exec_path, "link", line, tostring(curCursor.col) }):wait()
+    local result = vim.system({
+        opt.exec_path, "link",
+        line, tostring(curCursor.col)
+    }):wait()
 
     if result.code ~= 0 then
         vim.notify(result.stderr)
         return
     end
 
-    local fields = vim.split(result.stdout, '\n', { plain = true, trimempty = false })
+    local fields = vim.split(result.stdout, '\n', {
+        plain = true,
+        trimempty = false
+    })
 
     local link = {
         found = fields[1] == "true",

@@ -3,6 +3,11 @@ local function reload(moduleName)
     return require(moduleName)
 end
 
+local function wordcount()
+    return tostring(vim.fn.wordcount().words)
+end
+
 return {
-    reload_module = reload
+    reload_module = reload,
+    wordcount = wordcount
 }

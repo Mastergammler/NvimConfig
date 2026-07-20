@@ -12,6 +12,7 @@ local template = require "mg.simpkm.template"
 local tman = require "mg.simpkm.tman"
 local daily = require "mg.simpkm.daily"
 local timer = require "mg.performance.timing"
+local image = require "mg.simpkm.image"
 
 vim.keymap.set({ "n", "i" }, "<M-CR>", fun.cycle_bullet_todo, { desc = "[Markdown] Cycle bullet / todos" })
 vim.keymap.set({ "n", "i" }, "<C-CR>", fun.cycle_bullet_todo, { desc = "[Markdown] Cycle bullet / todos" })
@@ -27,11 +28,45 @@ vim.keymap.set({ "n" }, "<M-p>", daily.prev_daily,
     { desc = "[Markdown] Goto prev daily note" })
 vim.keymap.set({ "n" }, "<M-n>", daily.next_daily,
     { desc = "[Markdown] Goto next daily note" })
+vim.keymap.set({ "n" }, "<M-r>i", complete.regenerate_index,
+    { desc = "[PKM] Recreate the index" })
 vim.keymap.set({ "n" }, "<M-i>",
     function()
-        timer.measure("Created index in ", complete.regenerate_index)
+        timer.measure("Refreshed index in ", complete.reload_index)
     end,
-    { desc = "[Markdown] Goto next daily note" })
+    { desc = "[PKM] Refresh the index from the index file" })
+vim.keymap.set("n", "<M-r>l", image.to_md_image_link,
+    { desc = "[PKM] Convert obsidian (image) link to md link" })
+
+
+
+local ns = vim.api.nvim_create_namespace("markdown_line_limit")
+
+local function set_line_limit(event)
+    -- custom styling if wanted
+    vim.api.nvim_set_hl(0, "LineLimit", {
+        fg = "#ff8800",
+        bold = true,
+    })
+    local text = " Page End "
+    local width = 80
+    local pad = math.floor((width - #text) / 2)
+    local line =
+        string.rep("-", pad) .. text ..
+        string.rep("-", width - pad - #text)
+
+    local maxLine = vim.api.nvim_buf_line_count(event.buf)
+    local printLine = 60
+
+    if maxLine >= printLine then
+        local id = vim.api.nvim_buf_set_extmark(event.buf, ns, printLine, 0, {
+            virt_lines = {
+                { { line, "Comment" } },
+            },
+            virt_lines_above = true,
+        })
+    end
+end
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "markdown",
@@ -40,5 +75,12 @@ vim.api.nvim_create_autocmd("FileType", {
             buffer = event.buf,
             desc = "[Markdown] Follow markdown links",
         })
+    end,
+})
+vim.api.nvim_create_autocmd({ "fileType", "BufEnter", "TextChanged", "TextChangedI" }, {
+    pattern = "markdown",
+    callback = function(event)
+        vim.api.nvim_buf_clear_namespace(event.buf, ns, 0, -1)
+        set_line_limit(event)
     end,
 })
