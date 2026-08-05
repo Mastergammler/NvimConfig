@@ -46,7 +46,9 @@ local function next_note()
     end
 end
 
-fs.ensure_dir(opt.dir)
+if cfg.config.found then
+    fs.ensure_dir(opt.dir)
+end
 
 return {
     open_daily = goto_daily_note,

@@ -16,9 +16,17 @@ tele.setup {
         layout_config = {
             height = 0.95,
             width = 0.95,
-            preview_width = 0.65
+
+            horizontal = {
+                preview_width = 0.65,
+            },
+
+            vertical = {
+                preview_height = 0.5,
+            },
         },
         -- TODO: Configure this better, for right path bound etc
+        --
         path_display = { truncate = 3 }
     }
 }

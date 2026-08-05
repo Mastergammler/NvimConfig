@@ -90,6 +90,13 @@ end
 
 vim.keymap.set("n", "<leader>ms", show_msg_in_buffer, { silent = true })
 
+----------------
+-- FILE TYPES --
+----------------
+
+vim.keymap.set("n", "<leader>jj", function() vim.bo.filetype = "jinja" end,
+    { desc = "Sets filemode of the current file to jinja" })
+
 -----------------------
 -- TEXT MANIPULATION --
 -----------------------

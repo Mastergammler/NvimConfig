@@ -52,7 +52,9 @@ local function new_ticket()
     end)
 end
 
-fs.ensure_dir(opt.ticket_dir)
+if cfg.config.found then
+    fs.ensure_dir(opt.ticket_dir)
+end
 
 return {
     new_ticket = new_ticket

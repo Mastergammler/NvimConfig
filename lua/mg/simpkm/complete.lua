@@ -5,7 +5,8 @@ local time = require "mg.performance.timing"
 local opt = {
     exec_path = cfg.config.simpkm_exec,
     index_file = vim.fn.getcwd() .. "/" .. ".index",
-    vault_dir = cfg.from_relative("")
+    vault_dir = cfg.from_relative(""),
+    use_awk_dedup = true,
 }
 
 local indexExample = {
@@ -68,15 +69,14 @@ local function get_prefix()
     return before:match("%[%[([^%]]*)$") or ""
 end
 
-local function test_vault_query(prefix, index)
+local function vault_query(prefix, index)
     prefix = prefix:lower()
 
     local matches = {}
 
     for _, entry in ipairs(index) do
-        if entry.title:lower():find(prefix, 1, true) then
-            -- TODO: do something for showing if files exists
-            -- -> I could do this here prolly also
+        -- PERF: TODO - substring search is pretty expensive
+        if entry.title_lower:find(prefix, 1, true) then
             table.insert(matches, entry)
         end
     end
@@ -90,7 +90,7 @@ function source:complete(_, callback)
     local prefix = get_prefix():lower()
 
     -- TODO: replace this line with my c-tool callback
-    local matches = test_vault_query(prefix, index_cache)
+    local matches = vault_query(prefix, index_cache)
     local items = {}
 
     for _, m in ipairs(matches) do
@@ -133,6 +133,8 @@ end
 local function reload_index()
     index_cache = {};
 
+    if not vim.uv.fs_stat(opt.index_file) then return end
+
     for line in io.lines(opt.index_file) do
         local title, file_name, dir_id, is_alias, file_exists =
             line:match("^(.-):(.-):(%d+):([01]):([01])$")
@@ -146,6 +148,8 @@ local function reload_index()
 
             index_cache[#index_cache + 1] = {
                 title = title,
+                -- PERF: have the lower entries cached alreday
+                title_lower = title:lower(),
                 file_name = file_name,
                 dir_id = tonumber(dir_id),
                 is_alias = is_alias == "1",
@@ -157,8 +161,8 @@ end
 
 
 local function if_failed(res, msg)
-    if not res.code == 0 then
-        vim.notify(string.format("%s: %s %d", msg, res.error, res.code),
+    if res.code ~= 0 then
+        vim.notify(string.format("%s: \n\t%s \ncode: %d", msg, res.stderr, res.code),
             vim.log.levels.ERROR)
     end
 end
@@ -168,13 +172,15 @@ local function create_index()
     -- else it crashes the startup
     if not cfg.config.found then return end
 
+    local org = "rg -noP '(?!\\s)\\[\\[.*?\\]\\]' -t md"
+
     local t = {}
     time.start(t)
     local grepLinks = vim.system({
         "sh",
         "-c",
-        "grep -RnoP --include='*.md' '(?!`)\\[\\[.*?\\]\\]' "
-        .. opt.vault_dir
+        "rg -no '\\[\\[[^\\]]*\\]\\]' -t md"
+        .. ' ' .. opt.vault_dir
         .. " > .index_links",
     }):wait()
 
@@ -195,10 +201,33 @@ local function create_index()
     local aliasMs = time.since_update(t)
     time.update(t)
 
-    -- we can not write to the index file directly while we read it
-    local dedupIndex = vim.system({
-        "sh", "-c", "cat .index | sort | uniq > .tmp_index"
-    }):wait()
+
+    local dedupIndex;
+    if opt.use_awk_dedup then
+        -- NOTE: this keeps the last entry
+        -- need to check, if it is sufficent, when i handle dirs correctly
+        dedupIndex = vim.system({
+            "sh",
+            "-c",
+            [[
+sort .index | awk '
+{
+    key = $0
+    sub(/:[0-9]+:[0-9]+:[0-9]+$/, "", key)
+    if (!(key in seen)) {
+        seen[key] = 1
+        print
+    }
+}
+' .index | sort > .tmp_index
+    ]],
+        }):wait()
+    else
+        -- we can not write to the index file directly while we read it
+        dedupIndex = vim.system({
+            "sh", "-c", "cat .index | sort | uniq > .tmp_index"
+        }):wait()
+    end
 
     local dedupMs = time.since_update(t)
     time.update(t)
@@ -206,7 +235,6 @@ local function create_index()
 
     local moveMs = time.since_update(t)
     time.update(t)
-
 
     if_failed(grepLinks, "Grepping links failed")
     if_failed(indexRes, "[pkmp] Unable to create index")

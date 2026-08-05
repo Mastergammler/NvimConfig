@@ -14,6 +14,7 @@ Here is a [[link]] and another [[link2]] within one text
 
 # main heading
 
+- Testing daily note insertion
 [[Image link tests|ilt]]
 [[Image link tests|imalink tst]]
 

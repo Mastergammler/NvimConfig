@@ -50,7 +50,7 @@ local function parse_insert(templateDir, entry)
     local path = entry.path or (templateDir .. "/" .. entry.value)
 
     local ctx = {}
-    ctx.title = vim.fn.fnamemodify(entry.value, ":t:r")
+    ctx.title = vim.fn.expand("%:t:r")
     local lines = substitute_template(path, ctx)
 
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))

@@ -192,11 +192,6 @@ vim.lsp.config.eslint = {
     capabilities = capabilities
 }
 
-vim.lsp.config.ts_ls = {
-    on_attach = on_attach,
-    capabilities = capabilities
-}
-
 vim.lsp.config.ast_grep = {
     on_attach = on_attach,
     capabilities = capabilities
