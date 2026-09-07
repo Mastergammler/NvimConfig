@@ -113,5 +113,10 @@ return {
     },
     {
         "HiPhish/jinja.vim",
+    },
+    {
+        "SCJangra/table-nvim",
+        ft = 'markdown',
+        opts = {}
     }
 }

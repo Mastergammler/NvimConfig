@@ -13,10 +13,16 @@ local function is_text_file()
     return ft == 'markdown' or ft == 'text' or ft == 'asciidoc'
 end
 
+-- { "filename" , path = 1 } somtimes prepends a ./
+local function filename()
+    local path = vim.fn.expand("%:.")
+    return path:gsub("^%./", "")
+end
+
 require("lualine").setup({
     sections = {
-        lualine_b = { { "branch", "diff" }, directory },
-        lualine_c = { { "filename", path = 0 } },
+        lualine_b = { filename },
+        lualine_c = {},
         lualine_y = { { utils.wordcount, cond = is_text_file }, { 'progress', cond = function() return not is_text_file() end } },
         lualine_z = { 'location' }
     },
