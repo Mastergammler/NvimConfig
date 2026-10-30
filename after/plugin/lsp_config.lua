@@ -197,6 +197,13 @@ vim.lsp.config.ast_grep = {
     capabilities = capabilities
 }
 
+vim.lsp.config.lemminx = {
+    on_attach = on_attach,
+    capabilities = capabilities
+}
+
+
+
 vim.lsp.config.rust_analyzer = {
     on_attach = on_attach,
     capabilities = capabilities,

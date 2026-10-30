@@ -28,9 +28,9 @@ vim.keymap.set({ "n" }, "<M-p>", daily.prev_daily,
     { desc = "[Markdown] Goto prev daily note" })
 vim.keymap.set({ "n" }, "<M-n>", daily.next_daily,
     { desc = "[Markdown] Goto next daily note" })
-vim.keymap.set({ "n" }, "<M-r>i", complete.regenerate_index,
+vim.keymap.set({ "n" }, "<M-i>", complete.regenerate_index,
     { desc = "[PKM] Recreate the index" })
-vim.keymap.set({ "n" }, "<M-i>",
+vim.keymap.set({ "n" }, "<M-r>i",
     function()
         timer.measure("Refreshed index in ", complete.reload_index)
     end,
