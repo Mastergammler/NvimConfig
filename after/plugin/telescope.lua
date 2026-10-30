@@ -36,40 +36,18 @@ tele.setup {
 -----------------
 
 local function jj_git_project_files()
-    -- jj root only succeeds in a jj dir
-    local jjRoot, ret = utils.get_os_command_output({ 'jj', 'root' })
-
-    if ret == 0 then
-        -- jj find files is just super slow, takes about 30-40x the times git
-        -- uses, and the jitter is noticable when searching files ,
-        -- so we use the default find files instead, which is sufficient
-        builtin.find_files({ no_ignore = false })
-        --[[builtin.git_files({
-            prompt_title = 'JJ Files',
-            git_command = { 'jj', 'file', 'list', '--no-pager' },
-            cwd = jjRoot[1]
-        })]] --
-        return
-    end
-
-    local _, gitRet = utils.get_os_command_output({ 'git', 'rev-parse', '--is-inside-work-tree' })
-
-    if gitRet == 0 then
-        builtin.git_files()
-        return
-    end
-
-    -- basic fallback, just default find files
-    builtin.find_files({ no_ignore = true })
+    -- always just use find files, because it's faster
+    -- also then I don't need to git add before a file is found
+    builtin.find_files({ no_ignore = false })
 end
 
 -- NOTE: no ignore, still ignores some kind of dot files etc, it's a bit wired
 -- -> Not 100% sure why this happens actually
 vim.keymap.set('n', "<leader>ff", function() builtin.find_files({ no_ignore = true }) end,
-    { desc = 'Find files (working dir)' })
+    { desc = 'Find all files (working dir / no gitignore)' })
 vim.keymap.set('n', "<leader><leader>",
     jj_git_project_files,
-    { desc = 'Find files (tracked by jj/git)' })
+    { desc = 'Find files (respecting gitignore)' })
 
 -- TODO: check if i have overwritten this - not sure if i use this at all
 vim.keymap.set('n', '<leader>rf', builtin.oldfiles, { desc = 'Find recent files' })
