@@ -113,7 +113,40 @@ vim.keymap.set("n", "<leader>mf", refactor.git_move_current,
 vim.keymap.set('t', '``', '<C-\\><C-n>', { noremap = true, desc = 'Exists terminal insert mode' })
 vim.keymap.set({ 'n' }, '`,', '<C-w>wa',
     { noremap = true, desc = 'Jump to next window (terminal) and insert [Win Toggl]' })
-vim.keymap.set('n', '<leader>tt', '<C-w>wa<C-\\><C-n><C-w>w',
+--vim.keymap.set('n', '<leader>tt', '<C-w>wa<C-\\><C-n><C-w>w', { desc = 'Scroll terminal down (insert) and jump back [Win Toggle]' })
+--
+local function scroll_open_terminal()
+    local wins = vim.api.nvim_tabpage_list_wins(0)
+    local termWindows = {}
+
+    for _, win in ipairs(wins) do
+        local buf = vim.api.nvim_win_get_buf(win)
+        if vim.api.nvim_buf_get_option(buf, "buftype") == "terminal" then
+            table.insert(termWindows, { window = win, buffer = buf })
+        end
+    end
+
+    if #termWindows > 0 then
+        local prev = vim.api.nvim_get_current_win()
+        -- just take the first one if multiple are open
+        -- and table index starts at 1 ...
+        local termInfo = termWindows[1]
+
+        vim.api.nvim_set_current_win(termInfo.window)
+
+        -- triggering key presses
+        local keys = vim.api.nvim_replace_termcodes('a<C-\\><C-n>', true, false, true)
+        vim.api.nvim_feedkeys(keys, 'n', false)
+
+        -- INFO: It only works when putting a delay in here
+        -- Else the scroll doesn't happen, probably a nvim timing bug
+        vim.defer_fn(function()
+            vim.api.nvim_set_current_win(prev)
+        end, 10)
+    end
+end
+
+vim.keymap.set('n', '<leader>tt', scroll_open_terminal,
     { desc = 'Scroll terminal down (insert) and jump back [Win Toggle]' })
 vim.keymap.set('t', '`,', '<C-\\><C-n><C-w>w',
     { noremap = true, desc = 'Jump from terminal back to normal window [Win Toggl]' })

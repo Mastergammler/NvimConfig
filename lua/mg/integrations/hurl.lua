@@ -145,12 +145,6 @@ local function run()
     end
 end
 
-vim.keymap.set("n", "<leader>gc", function()
-    vim.cmd("w")
-    run()
-end, { desc = "go command!!!! - runs a test function somewhere" });
-
-
 return {
     run_cur_hurl = run
 }
