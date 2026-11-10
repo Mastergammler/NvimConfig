@@ -15,8 +15,8 @@ vim.keymap.set("n", "<F10>", dap.step_over, { desc = "step (over)" })
 vim.keymap.set("n", "<F4>", dap.terminate, { desc = "Terminate" })
 vim.keymap.set("n", "<C-w>", function() dapui.elements.watches.add(vim.fn.expand('<cword>')) end,
     { desc = "Add to watch" })
-vim.keymap.set("n", "<C-v>", function() require("dapui").eval(nil, { enter = true }) end,
-    { desc = "Evaluate current value" })
+-- WARN: C-V = visual block mode!
+--vim.keymap.set("n", "<C-v>", function() require("dapui").eval(nil, { enter = true }) end, { desc = "Evaluate current value" })
 
 dap.listeners.before.attach.dapui_config = function() dapui.open() end
 dap.listeners.before.launch.dapui_config = function() dapui.open() end

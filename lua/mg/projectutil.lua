@@ -117,12 +117,6 @@ function test()
     local file = findProjectFile({ GlobPattern = "init*" })
 end
 
---[[vim.keymap.set("n", "<leader>gc", function()
-    vim.cmd("w")
-    vim.cmd("so")
-    test()
-end, { desc = "go command!!!! - runs a test function somewhere" });]]
-
 return {
     print_execution_time = printExecutionTime,
     find_project_file = findProjectFile,

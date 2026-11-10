@@ -125,6 +125,7 @@ vim.keymap.set('t', '`,', '<C-\\><C-n><C-w>w',
 vim.keymap.set("n", "<leader>xx", function()
     vim.cmd('w')
 
+    utils.reload_module('mg.fs')
     utils.reload_module('mg.performance.timing')
     utils.reload_module('mg.simpkm.complete')
     utils.reload_module('mg.simpkm.template')
@@ -134,6 +135,7 @@ vim.keymap.set("n", "<leader>xx", function()
     utils.reload_module('mg.simpkm.image')
     utils.reload_module('mg.simpkm')
     utils.reload_module('mg.editor.history')
+    utils.reload_module('mg.integrations.hurl')
 
     local output = vim.fn.execute("silent source %")
 

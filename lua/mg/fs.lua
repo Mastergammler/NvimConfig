@@ -18,7 +18,7 @@ local function search_file(dir, fileName)
 end
 
 local function find_file_uptree(fileName)
-    local filePath = vim.fn.expand("%:p")
+    local filePath = vim.expand("%:p")
     local startDir = get_parent_dir(filePath)
     local workspaceDir = vim.fn.getcwd()
 
@@ -109,8 +109,14 @@ local function ensure_dir_exists(path)
     end
 end
 
+-- NOTE: Silent failure when the path is invalid
 local function file_exists(path)
-    return vim.uv.fs_stat(path)
+    if path == nil then return nil end
+    return vim.uv.fs_stat(path) ~= nil
+end
+
+local function cur_file_extension()
+    return vim.fn.expand('%:e')
 end
 
 return {
@@ -120,5 +126,6 @@ return {
     relative_path = remove_common_prefix,
     parent_dir_name = get_parent_dir_name,
     ensure_dir = ensure_dir_exists,
-    file_exists = file_exists
+    file_exists = file_exists,
+    cur_file_ext = cur_file_extension
 }

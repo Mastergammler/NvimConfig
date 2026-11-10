@@ -2,6 +2,7 @@ local mark = require('harpoon.mark')
 local ui = require("harpoon.ui")
 local term = require("harpoon.term")
 local projcmd = require("mg.projectcmd")
+local hurl = require 'mg.integrations.hurl'
 
 vim.keymap.set("n", "<leader>a", mark.add_file, { desc = "Add - file to harpoon list" })
 vim.keymap.set("n", "<leader>lh", ui.toggle_quick_menu, { desc = "list harpoon - page" })
@@ -43,3 +44,5 @@ vim.keymap.set("n", "<leader>tf", function()
     cmd(2, "test", cmdappend)
     print("Start Testing file", fileName, "...")
 end, { desc = "Test file - runs dotnet test for current file" })
+
+vim.keymap.set("n", "<leader>rf", hurl.run_cur_hurl, { desc = "run file - tries to run a specific file command" })

@@ -50,7 +50,7 @@ vim.keymap.set('n', "<leader><leader>",
     { desc = 'Find files (respecting gitignore)' })
 
 -- TODO: check if i have overwritten this - not sure if i use this at all
-vim.keymap.set('n', '<leader>rf', builtin.oldfiles, { desc = 'Find recent files' })
+--vim.keymap.set('n', '<leader>rf', builtin.oldfiles, { desc = 'Find recent files' })
 
 vim.keymap.set("n", "<leader>fn", function()
     require('telescope.builtin').lsp_workspace_symbols({
